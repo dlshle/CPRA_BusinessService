@@ -1,0 +1,10 @@
+server:
+  port: 8080
+
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT-6
+  data:
+    mongodb:
+      uri: mongodb://192.168.0.165:2020/test
