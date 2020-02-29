@@ -19,9 +19,9 @@ user authentication.
  ORM for communicating with the db server. 
 DB Design:
 ### User Collection
-```JSON
+```
 {
-	id: "String", 
+	id: 1, 
 	username: "String", 
 	email: "String", 
 	password: "String", 
@@ -30,9 +30,9 @@ DB Design:
 // terms is a list of term ids
 ```
 ### Course Collection
-```JSON
+```
 {
-	id: "String",
+	id: 1,
 	title: "String",
 	description: "String",
 	terms: [1, 2, 3]
@@ -40,9 +40,9 @@ DB Design:
 // terms is a list of term ids
 ```
 ### Term Collection
-```JSON
+```
 {
-	id: "String",
+	id: 1,
 	title: "String",
 	semester: "String",
 	taughtBy: [1, 2],
@@ -55,9 +55,9 @@ DB Design:
 // comments is a list of comment ids
 ```
 ### Comment Collection
-```JSON
+```
 {
-	id: "String",
+	id: 1,
 	content: "String",
 	author: 1,
 	lastModifiedDate: "String",
@@ -65,12 +65,12 @@ DB Design:
 // author is the user id of this comment
 ```
 ### Professor Collection
-```JSON
+```
 {
-	id: "String",
+	id: 1,
 	name: "String",
 	description: "String",
-	terms: [1, 2, 3],
+	terms: [1, 2, 3]
 }
 // terms is a list of term ids
 ```

@@ -5,8 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.wisc.business.model.BusinessModel.Term;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -14,20 +18,16 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+@Document(collection = "User")
+public class User implements Serializable {
+    @Id
+    @Indexed
     private String id;
     private String email;
     private String username;
     @JsonIgnore
     private String password;
-    private List<Term> favorite;
+    @Field("favorite")
+    private List<Long> favoriteIds;
     private Date createdDate;
-
-    public boolean addFavoriate(Term term) {
-        if (term != null && !favorite.contains(term)) {
-            favorite.add(term);
-            return true;
-        }
-        return false;
-    }
 }
