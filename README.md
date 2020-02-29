@@ -14,11 +14,67 @@ Controllers include course controller, term controller, professor controller,
 and comment controller. All controller handle the basic CRUD of data with 
 user authentication.
  
- ## Database and business handling
+## Database and business handling
  MongoDB is used as the database server. Spring Data MongoDB is used as the 
  ORM for communicating with the db server. 
- 
- ## User authentication
+DB Design:
+### User Collection
+```JSON
+{
+	id: "String", 
+	username: "String", 
+	email: "String", 
+	password: "String", 
+	terms: [1, 2, 3]
+}
+// terms is a list of term ids
+```
+### Course Collection
+```JSON
+{
+	id: "String",
+	title: "String",
+	description: "String",
+	terms: [1, 2, 3]
+}
+// terms is a list of term ids
+```
+### Term Collection
+```JSON
+{
+	id: "String",
+	title: "String",
+	semester: "String",
+	taughtBy: [1, 2],
+	description: "String",
+	rating: 1.5,
+	comments: [1, 2, 3]
+}
+// taughBy is a list of professor ids
+// rating is the average rating from comments
+// comments is a list of comment ids
+```
+### Comment Collection
+```JSON
+{
+	id: "String",
+	content: "String",
+	author: 1,
+	lastModifiedDate: "String",
+}
+// author is the user id of this comment
+```
+### Professor Collection
+```JSON
+{
+	id: "String",
+	name: "String",
+	description: "String",
+	terms: [1, 2, 3],
+}
+// terms is a list of term ids
+```
+## User authentication
 JWT token is used for validating current login user. Some APIs require user 
 login to access. Without valid authentication, an error message will be 
 returned from the server(handled in controllers with help from 
