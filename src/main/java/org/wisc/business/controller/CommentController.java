@@ -21,6 +21,9 @@ import java.util.Optional;
 @RequestMapping("v1/comments")
 public class CommentController {
     @Resource
+    CommentDAO commentDao;
+
+    @Autowired
     MongoRepository commentRepository;
 
     // TODO user auth

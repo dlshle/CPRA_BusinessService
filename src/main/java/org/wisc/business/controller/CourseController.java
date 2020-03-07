@@ -13,6 +13,9 @@ import javax.annotation.Resource;
 @RequestMapping("/v1/courses")
 public class CourseController {
     @Resource
+    CourseDAO courseDao;
+
+    @Autowired
     MongoRepository courseRepository;
 
     @PostMapping("/")
