@@ -18,37 +18,38 @@ user authentication.
  MongoDB is used as the database server. Spring Data MongoDB is used as the 
  ORM for communicating with the db server. 
 DB Design:
+All ids are string.
 ### User Collection
 ```
 {
-	id: 1, 
+	id: "1", 
 	username: "String", 
 	email: "String", 
 	password: "String", 
-	terms: [1, 2, 3]
+	terms: ["1", "2", "3"]
 }
 // terms is a list of term ids
 ```
 ### Course Collection
 ```
 {
-	id: 1,
+	id: "1",
 	title: "String",
 	description: "String",
-	terms: [1, 2, 3]
+	terms: ["1", "2", "3"]
 }
 // terms is a list of term ids
 ```
 ### Term Collection
 ```
 {
-	id: 1,
+	id: "1",
 	title: "String",
 	semester: "String",
-	taughtBy: [1, 2],
+	taughtBy: ["1", "2"],
 	description: "String",
 	rating: 1.5,
-	comments: [1, 2, 3]
+	comments: ["1", "2", "3"]
 }
 // taughBy is a list of professor ids
 // rating is the average rating from comments
@@ -57,9 +58,9 @@ DB Design:
 ### Comment Collection
 ```
 {
-	id: 1,
+	id: "1",
 	content: "String",
-	author: 1,
+	author: "1",
 	lastModifiedDate: "String",
 }
 // author is the user id of this comment
@@ -67,10 +68,10 @@ DB Design:
 ### Professor Collection
 ```
 {
-	id: 1,
+	id: "1",
 	name: "String",
 	description: "String",
-	terms: [1, 2, 3]
+	terms: ["1", "2", "3"]
 }
 // terms is a list of term ids
 ```

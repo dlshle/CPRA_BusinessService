@@ -18,11 +18,14 @@ import java.util.Date;
 @Builder
 @Document(collection = "Comment")
 public class Comment implements Serializable {
+
+    private static final long serialVersionUID = -8985545025018236854L;
+
     @Id
     @Indexed
-    private Long id;
+    private String id;
     private String content;
     private User author;
     private Date lastModifiedDate;
-    private double rating;
+    private Double rating;
 }

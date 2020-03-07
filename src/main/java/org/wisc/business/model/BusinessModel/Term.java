@@ -18,12 +18,14 @@ import java.util.List;
 @Builder
 @Document(collection = "Term")
 public class Term implements Serializable {
+    private static final long serialVersionUID = -8985545042018238754L;
+
     @Id
     @Indexed
-    private Long id;
+    private String id;
     private String description;
-    private double averageRating;
+    private Double averageRating;
     private Season season;
     @Field("comments")
-    private List<Long> commentIds;
+    private List<String> commentIds;
 }

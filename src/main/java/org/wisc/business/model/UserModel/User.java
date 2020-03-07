@@ -14,6 +14,10 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * User
+ * User class represents the user for CPR Mobile app.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

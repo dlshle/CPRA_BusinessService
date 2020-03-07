@@ -1,5 +1,9 @@
 package org.wisc.business.model.BusinessModel;
 
+/**
+ * Season
+ * Season enum represents the course season.
+ */
 public enum Season {
     FALL("FALL"), SPRING("SPRING"), SUMMER("SUMMER");
 

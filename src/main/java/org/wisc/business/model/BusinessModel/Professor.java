@@ -18,11 +18,14 @@ import java.util.List;
 @Builder
 @Document(collection = "Professor")
 public class Professor implements Serializable {
+
+    private static final long serialVersionUID = -8985545025018238334L;
+
     @Id
     @Indexed
-    private Long id;
+    private String id;
     private String name;
     private String description;
     @Field("terms")
-    private List<Long> termIds;
+    private List<String> termIds;
 }

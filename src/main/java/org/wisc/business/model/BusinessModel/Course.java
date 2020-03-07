@@ -18,10 +18,13 @@ import java.util.List;
 @Builder
 @Document(collection = "Course")
 public class Course implements Serializable {
+
+    private static final long serialVersionUID = -8931545025018238754L;
+
     @Id
     @Indexed
-    private Long id;
+    private String id;
     private String description;
     @Field("terms")
-    private List<Long> termsIds;
+    private List<String> termsIds;
 }
