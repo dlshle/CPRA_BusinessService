@@ -5,6 +5,7 @@ import org.wisc.business.model.BusinessModel.Course;
 
 import javax.annotation.Resource;
 
+@Deprecated
 public class CourseUtils {
     @Resource
     private static MongoRepository courseRepository;

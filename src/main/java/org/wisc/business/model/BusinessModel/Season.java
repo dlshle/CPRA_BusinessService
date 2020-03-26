@@ -9,6 +9,19 @@ public enum Season {
 
     private final String value;
 
+    public static Season generateSeason(String s) {
+        s = s.toLowerCase();
+        switch (s) {
+            case "fall":
+                return FALL;
+            case "spring":
+                return SPRING;
+            case "SUMMER":
+                return SUMMER;
+        }
+        return null;
+    }
+
     Season(String value) {
         this.value = value;
     }

@@ -1,0 +1,109 @@
+MongoDB is scalable, high performance, and high usability database.
+MongoDB is also a distributed db. It's both relational and non-relational.
+MongoDB has db, collection, document. A collection corresponds to a table, and a
+ document corresponds to a row. In MongoDB, no need to create table first.
+
+MongoDB server config: /etc/mongodb.cnf
+MongoDB cli: mongo
+
+New DB: use DB_NAME
+New collection: db.createCollection('customers');
+Add User to DB: use DB_NAME
+                db.createUser(
+                  {
+                    user: "reportsUser",
+                    pwd: passwordPrompt(),  // or cleartext password
+                    roles: [
+                       { role: "read", db: "db1" },
+                       { role: "read", db: "db2" }
+                    ]
+                  }
+                )
+    OR
+    > use admin
+    > db.addUser('username','password');
+Show all collection: show collections;
+Drop a collection: db.COLLECTION_NAME.drop()
+New document: db.customers.insert({a:"x", b:"y"});
+See documents: db.customers.find();
+New multiple documents: db.customers.insert([{a:"a", b:"b"}, {a:"c", b:"d",
+c:"e"}]) // here we can just add a new field on the fly!
+Update field: db.customers.update({a:"a"}, {a:"zxc", b:"qwe", c:"aaa"); // first
+para:  match, second para: updated obj(need to specify all other fields as well
+Set field: db.customer.update({a:"x"}, {$set:b:"z"}) // just update(set) one
+field
+Increment a field by n: db.customer.update({a:"x"}, {$set:b:"z", i:11})  // give
+a new field i as num.
+db.customer.update({a:"a"}, {$inc:{i:5}}); // increament i by 5 => i=16
+Unset a field: db.customer.update({a:"a"}, {$unset:{i:1}}); now i of a:"a" is
+undefined
+Upsert:db.customers.update({a:"u"}, {a:"y", b:"z"}, {upsert: true}); // this
+will insert the DNE object that u r trying to update.
+Rename:db.customer.update({a:"x"}, {$rename:{"y":"z"}});// rename the field y of
+ a to z
+Insert date: db.customers.update({a:"zxc", {a:"asdad", b:"asdaa", date: Date()})
+;
+Remove: db.customer.rmeove({a:"x"});
+Remove only the first one: db.customer.remove({a:"x"}, {justOne:true});
+Double query: db.customer.find({$or:[{a:"x"}, {a:"u"}]); // give 2 results
+Conditional query: db.customer.find({i:{$gt: 12}); // find all objs w/ i > 12
+Query one cond: db.customer.find({"y":"r"}); //NEED that "" AROUND FIELD!!!
+Sorting: db.customer.find().sort({i:1}); // sort by i in asc order
+Sorting: db.customer.find().sort({i:-1}); // sort by i in desc order
+Counting: db.customer.find().count(); // # of results can work with different
+conds in find.
+Limit result: db.customer.find().limit(4); // only first 4 results
+Sort limited result: db.customer.find().limit(4).sort({i:1}); // only first 4
+results
+Iterate results: db.customer.find().forEach({function(doc) {print("Customer
+Name:" + doc.first_name)});
+
+ <dependency>
+     <groupId>org.springframework.boot</groupId>
+     <artifactId>spring-boot-starter-data-mongodb</artifactId>
+ </dependency>
+
+ spring:
+   data:
+     mongodb:
+       uri: mongodb://test:123456@192.168.161.3:27017/testdb
+
+       /*
+           单机模式：mongodb://name:pwd@ip:port/database
+           集群模式：mongodb://name:pwd@ip1:port1,ip2:port2/database
+       */
+
+In main(), add @EnableMongoAuditing annotation to enable mongodb.
+
+Document class:
+
+@Document(collection = "article")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Article implements Serializable {
+
+    private static final long serialVersionUID = -8985545025018238754L;
+
+    // MongoDB will automatically take care of id, or you have to add @Id to
+    //maintain id by yourself
+    private String id;
+    @Indexed // fast query with indexing on author
+    private String author;
+    private String title;
+    @Field("msgContent") // different  name for this field
+    private String content;
+    @CreatedDate // use created date for this field
+    private Date createTime;
+
+    private List<Reader> readers;
+}
+
+Just like other JPA application, we need a Repository class for this document:
+public interface ArticleDao extends MongoRepository<Article,String> {
+        //支持关键字查询，和JPA的用法一样
+        Article findByAuthor(String author);
+}
+
+

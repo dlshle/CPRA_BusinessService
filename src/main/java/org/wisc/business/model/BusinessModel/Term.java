@@ -1,9 +1,6 @@
 package org.wisc.business.model.BusinessModel;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,15 +14,19 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Document(collection = "Term")
+@ToString
 public class Term implements Serializable {
     private static final long serialVersionUID = -8985545042018238754L;
 
-    @Id
-    @Indexed
     private String id;
+
+    private String courseId;
+    private String name;
     private String description;
     private Double averageRating;
+    private Integer year;
     private Season season;
+    private List<String> professorIds;
     @Field("comments")
     private List<String> commentIds;
 }

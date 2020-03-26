@@ -1,6 +1,8 @@
 package org.wisc.business.model.UserModel;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,14 +26,23 @@ import java.util.List;
 @Builder
 @Document(collection = "User")
 public class User implements Serializable {
-    @Id
-    @Indexed
+
+    private static final long serialVersionUID = -8985541232018238754L;
+
     private String id;
+
+    @Indexed(name="email_index", unique=true)
     private String email;
+    @Indexed(name="username_index", unique=true)
     private String username;
+    private String name;
+    // !! use passwd on the front-end !!
     @JsonIgnore
+    @JsonProperty(value="passwd")
     private String password;
-    @Field("favorite")
-    private List<Long> favoriteIds;
+    // id list of favorite terms
+    private List<String> favorite;
     private Date createdDate;
+    @JsonIgnore
+    private String salt;
 }
