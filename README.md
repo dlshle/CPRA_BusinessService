@@ -5,7 +5,7 @@
 professors in professor.termIds)
 - Add nullity test to all findBy methods.
 - Integrating in memory LRUCache with DAO services.
-- Make user auth services.
+- Make user auth services. *
 - Make LFUCache for caching user status.
 - Make tests for db services.
 - Make tests for LRUCache.
