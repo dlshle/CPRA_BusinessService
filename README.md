@@ -1,6 +1,6 @@
 # Business Service
 
-# TODO:
+## TODO:
 - Add back reference(e.g. new term->use professorIds to back reference 
 professors in professor.termIds)
 - Add nullity test to all findBy methods.
@@ -93,7 +93,78 @@ All ids are string.
 ```
 
 ## API End Points
-TODO
+
+### Respond Objects
+For all valid requests, the system responds with an AjaxResponse Object where
+ it specifies the status of the response.
+ 
+```
+{
+    isSuccess: boolea,
+    code: int, // 200 for success, 400 for invalid request param
+    message: string, // all failed requests has a corresponding error message
+    data: {object} // all success response has a corresponding object
+}
+```
+
+### End Points specification
+All search apis return a list of results, otherwise, return a JSON object.
+
+All bullet points in *italic* indicates the service requires login and a 
+request body specifying the object that needs to be modified.
+
+All service start with "Search", "Query", and "Get All" means it responds 
+with a list of objects.
+All service start with "Get" and other verbs means it responds with an object. 
+
+User endpoints:
+- Register: POST /v1/users/
+- *Update User Info*: PUT /v1/users/
+- *Remove User*: DELETE /v1/users/
+- Get All Users: GET /v1/users/
+- Get User By Id: GET /v1/users/{id}
+- Get User By Email: GET /v1/users/email/{email}
+- Get User By Username: GET /v1/users/username/{username}
+- Search User By Name: GET /v1/users/name/{name}
+
+Course endpoints:
+- *Upload Course*: POST /v1/courses/
+- *Update Course*: PUT /v1/courses/
+- *Remove Course*: DELETE /v1/courses/
+- Get All Courses: GET /v1/courses/
+- Get Course By Id: GET /v1/courses/{id}
+- Get Course By Name: GET /v1/courses/name/{name}
+
+Term endpoints:
+- *Add Term(requires login)*: POST /v1/terms/
+- *Update Term(requires login)*: PUT /v1/terms/
+- *Remove Term(requires login)*: DELETE /v1/terms/
+- Get All Terms: GET /v1/terms/
+- Search All Terms By Course Id: GET /v1/terms/courseId/{course_id}
+- Search All Terms By Course Name: GET /v1/terms/courseName/{course_name}
+- Search All Terms By Rating: GET /v1/terms/rating/{rating}
+- Search All Terms By Year: GET /v1/terms/year/{year}
+- Get Term By Id: GET /v1/terms/{id}
+- Query Terms: GET /v1/terms/query/?year={int_year}&from={int_year_from}&to
+={int_year_to}&season={str_season}&courseName={str_course_name}&averageRating
+={double_average_rating}&ratingFrom={double_rating_from}&ratingTo
+={double_rating_to}
+
+Professor endpoints:
+- *Upload Professor*: POST /v1/professors/
+- *Update Professor*: PUT /v1/professors/
+- *Remove Professor*: DELETE /v1/professors/
+- Get All Professors: GET /v1/professors/
+- Get Professor By Id: GET /v1/professors/{id}
+- Search All Professor By Name: GET /v1/professors/name/{name}
+
+Comment endpoints:
+- *Upload Comment*: POST /v1/comments/
+- *Update Comment*: PUT /v1/comments/
+- *Remove Comment*: DELETE /v1/comments/
+- Get All Comments: GET /v1/comments/
+- Get Comment By Id: GET /v1/comments/{id}
+
 ## User authentication
 JWT token is used for validating current login user. Some APIs require user 
 login to access. Without valid authentication, an error message will be 
