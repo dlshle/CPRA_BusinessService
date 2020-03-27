@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.wisc.business.dao.CourseDAO;
 import org.wisc.business.model.AjaxResponse;
 import org.wisc.business.model.BusinessModel.Course;
+import org.wisc.business.service.AuthenticationService;
 import org.wisc.business.service.CourseService;
 
 import javax.annotation.Resource;
@@ -16,10 +17,15 @@ import javax.annotation.Resource;
 public class CourseController {
     @Resource
     CourseService courseService;
+    @Resource
+    AuthenticationService authenticationService;
 
     // TODO user auth
     @PostMapping("")
-    public @ResponseBody AjaxResponse addCourse(@RequestBody Course course) {
+    public @ResponseBody AjaxResponse addCourse(@RequestHeader("token") String token
+            ,@RequestBody Course course) {
+        if (!authenticationService.isValidToken(token))
+            return AjaxResponse.notLoggedIn();
         Course newCourse = courseService.add(course);
         return (newCourse == null?AjaxResponse.error(400,
                 "Course("+course.getId()+") already exists."):
@@ -28,7 +34,10 @@ public class CourseController {
 
     // TODO user auth
     @PutMapping("")
-    public @ResponseBody AjaxResponse updateCourse(@RequestBody Course course) {
+    public @ResponseBody AjaxResponse updateCourse(@RequestHeader(
+            "token") String token, @RequestBody Course course) {
+        if (!authenticationService.isValidToken(token))
+            return AjaxResponse.notLoggedIn();
         Course newCourse = courseService.update(course);
         if (newCourse == null) {
             return AjaxResponse.error(400, "Course("+course.getId()+") is " +
@@ -58,7 +67,10 @@ public class CourseController {
 
     // TODO user auth
     @DeleteMapping("")
-    public @ResponseBody AjaxResponse deleteCourse(@RequestBody  Course course) {
+    public @ResponseBody AjaxResponse deleteCourse(@RequestHeader(
+            "token") String token, @RequestBody  Course course) {
+        if (!authenticationService.isValidToken(token))
+            return AjaxResponse.notLoggedIn();
         if (courseService.delete(course))
             return AjaxResponse.success();
         return AjaxResponse.error(400, "Invalid course("+course.getId()+")");

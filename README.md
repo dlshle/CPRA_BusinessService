@@ -1,5 +1,14 @@
 # Business Service
 
+Test user: 
+```
+{
+    "username":"admin",
+    "email":"badger@wisc.edu",
+    "passwd":"123456"
+}
+```
+
 ## TODO:
 - Add back reference(e.g. new term->use professorIds to back reference 
 professors in professor.termIds)
@@ -113,9 +122,17 @@ All search apis return a list of results, otherwise, return a JSON object.
 All bullet points in *italic* indicates the service requires login and a 
 request body specifying the object that needs to be modified.
 
+If the client tries to access services that require login without a valid 
+token, the server will respond with an object with status attribute of value 
+400.
+
 All service start with "Search", "Query", and "Get All" means it responds 
 with a list of objects.
 All service start with "Get" and other verbs means it responds with an object. 
+
+Auth endpoints:
+- *Login*: POST /v1/auth/login/
+- *Validate token*:
 
 User endpoints:
 - Register: POST /v1/users/
@@ -171,8 +188,15 @@ login to access. Without valid authentication, an error message will be
 returned from the server(handled in controllers with help from 
 authentication utilities).
 
-JWT token consists of body and signature. The body part only contains the 
-username, and the signature is the password corresponding to the username.
+JWT token consists of issued time, body, and signature. The body part only 
+contains the username, and the signature is the password corresponding to 
+the username.
+
+Once a token is received on the front-end, the client will inject the token 
+to the header, so that for each request, the server will receive the token 
+from request header. 
+
+
 
 Tokens will be renewed every 30 minutes. Implementation details are unspecified.
 

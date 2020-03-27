@@ -5,24 +5,39 @@ import org.springframework.web.bind.annotation.*;
 import org.wisc.business.authentication.UserAuthManager;
 import org.wisc.business.model.AjaxResponse;
 import org.wisc.business.model.UserModel.User;
+import org.wisc.business.service.AuthenticationService;
+import org.wisc.business.service.UserService;
 
+import javax.websocket.server.PathParam;
+
+/**
+ * Auth Controller
+ */
 @RestController
 @RequestMapping("/v1/auth")
 public class AuthenticationController {
+    @Autowired
+    AuthenticationService authenticationService;
 
     @PostMapping("/login")
     public @ResponseBody
     AjaxResponse login(@RequestBody User user) {
-        if (user.getEmail() != null) {
-            // get user
+        if (user == null || (user.getUsername() == null && user.getEmail() == null) ||
+                user.getPassword() == null || user.getPassword().isEmpty())
+            return AjaxResponse.error(400, "Invalid login parameter.");
+        String loginResult = authenticationService.login(user);
+        if (loginResult == null || loginResult.equals("Invalid Password")) {
+            return AjaxResponse.error(400, (user.getEmail() == null?
+                    "Incorrect username or password":"Incorrect email or " +
+                    "password."));
         }
-        if (user.getUsername() == null) {
-            AjaxResponse.error(400, "Invalid email or username.");
-        }
-        // get user by username
+        return AjaxResponse.success(loginResult);
+    }
 
-        // set jwt
-
-        // use userAuthManager to manage the loggedin user
+    @GetMapping("/token/{token}")
+    public @ResponseBody AjaxResponse validateToken(@PathVariable String token) {
+        if (token == null || token.isEmpty())
+            return AjaxResponse.error(400, "Invalid token(empty or null)");
+        return AjaxResponse.success(authenticationService.isValidToken(token));
     }
 }

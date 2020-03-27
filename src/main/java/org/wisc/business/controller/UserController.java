@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.wisc.business.model.AjaxResponse;
 import org.wisc.business.model.UserModel.User;
+import org.wisc.business.service.AuthenticationService;
 import org.wisc.business.service.DuplicateEmailException;
 import org.wisc.business.service.DuplicateUserNameException;
 import org.wisc.business.service.UserService;
@@ -17,15 +18,15 @@ public class UserController {
     @Resource
     UserService userService;
 
+    @Resource
+    AuthenticationService authenticationService;
+
     // TODO user auth
     @PostMapping("")
     public @ResponseBody
     AjaxResponse addUser(@RequestBody User user) {
-        // DEBUGGING
-        System.out.println("POST v1/users/");
-        System.out.println(user);
         User newUser;
-        if (user.getUsername() == null || user.getUsername().length() < 6)
+        if (user.getUsername() == null || user.getUsername().length() < 5)
             return AjaxResponse.error(400,
                     "Invalid username" + user.getUsername());
         if (user.getEmail() == null || user.getEmail().length() < 6)
@@ -47,7 +48,10 @@ public class UserController {
 
     // TODO user auth
     @PutMapping("")
-    public @ResponseBody AjaxResponse updateUser(@RequestBody User user) {
+    public @ResponseBody AjaxResponse updateUser(@RequestHeader("token") String token
+            ,@RequestBody User user) {
+        if (!authenticationService.isValidToken(token))
+            return AjaxResponse.notLoggedIn();
         User newUser = null;
         try {
             newUser = userService.update(user);
@@ -105,7 +109,10 @@ public class UserController {
     // TODO user auth
     @DeleteMapping("")
     public @ResponseBody
-    AjaxResponse deleteUser(@RequestBody User user) {
+    AjaxResponse deleteUser(@RequestHeader("token") String token,
+                            @RequestBody User user) {
+        if (!authenticationService.isValidToken(token))
+            return AjaxResponse.notLoggedIn();
         if (userService.delete(user))
             return AjaxResponse.success();
         return AjaxResponse.error(400, "Invalid user("+user.getId()+")");

@@ -11,14 +11,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AjaxResponse {
     private boolean isSuccess;
-    private int code;
+    private int status;
     private String message;
     private Object data;
 
     public static AjaxResponse success() {
         AjaxResponse result = new AjaxResponse();
         result.setSuccess(true);
-        result.setCode(200);
+        result.setStatus(200);
         result.setMessage("success");
         return result;
     }
@@ -33,7 +33,7 @@ public class AjaxResponse {
     public static AjaxResponse success(Object data) {
         AjaxResponse result = new AjaxResponse();
         result.setSuccess(true);
-        result.setCode(200);
+        result.setStatus(200);
         result.setMessage("success");
         result.setData(data);
         return result;
@@ -42,15 +42,19 @@ public class AjaxResponse {
     /**
      * error
      * error creates the standard error ajax response message to the front end.
-     * @param code error code to indicate the error status
+     * @param code error status to indicate the error status
      * @param message error message to identify the error source
      * @return the AjaxResponse with error status wrapped
      */
     public static AjaxResponse error(int code, String message) {
         AjaxResponse result = new AjaxResponse();
         result.setSuccess(false);
-        result.setCode(code);
+        result.setStatus(code);
         result.setMessage(message);
         return result;
+    }
+
+    public static AjaxResponse notLoggedIn() {
+        return AjaxResponse.error(400, "Login required for this action");
     }
 }

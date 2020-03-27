@@ -11,6 +11,7 @@ import org.wisc.business.model.BusinessModel.Course;
 import org.wisc.business.model.BusinessModel.Professor;
 import org.wisc.business.model.BusinessModel.Season;
 import org.wisc.business.model.BusinessModel.Term;
+import org.wisc.business.service.AuthenticationService;
 import org.wisc.business.service.CourseService;
 import org.wisc.business.service.ProfessorService;
 import org.wisc.business.service.TermService;
@@ -33,13 +34,19 @@ public class TermController {
     @Resource
     ProfessorService professorService;
 
+    @Resource
+    AuthenticationService authenticationService;
+
     @Autowired
     MongoTemplate mongoTemplate;
 
     // TODO user auth
     @PostMapping("")
     public @ResponseBody
-    AjaxResponse addTerm(@RequestBody Term term) {
+    AjaxResponse addTerm(@RequestHeader("token") String token,
+                         @RequestBody Term term) {
+        if (!authenticationService.isValidToken(token))
+            return AjaxResponse.notLoggedIn();
         Term newTerm = termService.add(term);
         return (newTerm == null?AjaxResponse.error(400,
                 "Term("+term.getId()+") already exists."):
@@ -48,7 +55,10 @@ public class TermController {
 
     // TODO user auth
     @PutMapping("")
-    public @ResponseBody AjaxResponse updateTerm(@RequestBody Term term) {
+    public @ResponseBody AjaxResponse updateTerm(@RequestHeader("token") String token
+            ,@RequestBody Term term) {
+        if (!authenticationService.isValidToken(token))
+            return AjaxResponse.notLoggedIn();
         Term newTerm = termService.update(term);
         if (newTerm == null) {
             return AjaxResponse.error(400, "Term("+term.getId()+") is " +
@@ -179,7 +189,10 @@ public class TermController {
     // TODO user auth
     @DeleteMapping("")
     public @ResponseBody
-    AjaxResponse deleteTerm(@RequestBody Term term) {
+    AjaxResponse deleteTerm(@RequestHeader("token") String token,
+                            @RequestBody Term term) {
+        if (!authenticationService.isValidToken(token))
+            return AjaxResponse.notLoggedIn();
         if (termService.delete(term))
             return AjaxResponse.success();
         return AjaxResponse.error(400, "Invalid term("+term.getId()+")");

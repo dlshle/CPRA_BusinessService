@@ -1,9 +1,11 @@
 package org.wisc.business.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.wisc.business.model.AjaxResponse;
 import org.wisc.business.model.BusinessModel.Comment;
+import org.wisc.business.service.AuthenticationService;
 import org.wisc.business.service.CommentService;
 
 import javax.annotation.Resource;
@@ -20,10 +22,15 @@ import java.util.List;
 public class CommentController {
     @Resource
     CommentService commentService;
+    @Resource
+    AuthenticationService authenticationService;
 
     // TODO user auth
     @PostMapping("")
-    public @ResponseBody  AjaxResponse addComment(@RequestBody  Comment comment) {
+    public @ResponseBody  AjaxResponse addComment(@RequestHeader(
+            "token") String token, @RequestBody  Comment comment) {
+        if (!authenticationService.isValidToken(token))
+            return AjaxResponse.notLoggedIn();
         Comment savedComment = commentService.add(comment);
         return (AjaxResponse.success(savedComment));
     }
@@ -45,7 +52,10 @@ public class CommentController {
 
     // TODO user auth
     @PutMapping("")
-    public @ResponseBody AjaxResponse updateComment(@RequestBody Comment comment) {
+    public @ResponseBody AjaxResponse updateComment(@RequestHeader(
+            "token") String token, @RequestBody Comment comment) {
+        if (!authenticationService.isValidToken(token))
+            return AjaxResponse.notLoggedIn();
         // update the comment timestamp on server
         comment.setLastModifiedDate(new Date());
         Comment newComment = commentService.update(comment);
@@ -58,7 +68,10 @@ public class CommentController {
 
     // TODO user auth
     @DeleteMapping("")
-    public @ResponseBody AjaxResponse deleteComment(@RequestBody Comment comment) {
+    public @ResponseBody AjaxResponse deleteComment(@RequestHeader(
+            "token") String token, @RequestBody Comment comment) {
+        if (!authenticationService.isValidToken(token))
+            return AjaxResponse.notLoggedIn();
         if (commentService.delete(comment))
             return AjaxResponse.success();
         return AjaxResponse.error(400, "Invalid comment("+comment.getId()+")");

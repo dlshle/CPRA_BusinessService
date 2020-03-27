@@ -1,9 +1,16 @@
 package org.wisc.business.authentication;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import org.wisc.business.model.UserModel.User;
+
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 public class SecurityUtil {
+    public static final long EXPIRATION_PERIOD = 1800000l;
 
     public static String hashPassword(String password, String salt) {
         try {
@@ -65,5 +72,20 @@ public class SecurityUtil {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * Generates a token with user issued at current system time in mills
+     * @param user user issued to
+     * @return signed token
+     */
+    public static String generateToken(User user) {
+        String token = "";
+        token = JWT.create()
+                        .withIssuedAt(new Date(System.currentTimeMillis()))
+                        .withAudience(user.getId())
+                        .sign(Algorithm.HMAC256(user.getPassword())); //no
+        // worries, password is hashed
+        return token;
     }
 }

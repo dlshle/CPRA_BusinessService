@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.wisc.business.model.AjaxResponse;
 import org.wisc.business.model.BusinessModel.Professor;
+import org.wisc.business.service.AuthenticationService;
 import org.wisc.business.service.ProfessorService;
 
 import javax.annotation.Resource;
@@ -14,11 +15,16 @@ import javax.annotation.Resource;
 public class ProfessorController {
     @Resource
     ProfessorService professorService;
+    @Resource
+    AuthenticationService authenticationService;
 
     // TODO user auth
     @PostMapping("")
     public @ResponseBody
-    AjaxResponse addProfessor(@RequestBody Professor professor) {
+    AjaxResponse addProfessor(@RequestHeader("token") String token,
+                              @RequestBody Professor professor) {
+        if (!authenticationService.isValidToken(token))
+            return AjaxResponse.notLoggedIn();
         Professor newProfessor = professorService.add(professor);
         return (newProfessor == null?AjaxResponse.error(400,
                 "Professor("+professor.getId()+") already exists."):
@@ -27,7 +33,10 @@ public class ProfessorController {
 
     // TODO user auth
     @PutMapping("")
-    public @ResponseBody AjaxResponse updateProfessor(@RequestBody Professor professor) {
+    public @ResponseBody AjaxResponse updateProfessor(@RequestHeader(
+            "token") String token, @RequestBody Professor professor) {
+        if (!authenticationService.isValidToken(token))
+            return AjaxResponse.notLoggedIn();
         Professor newProfessor = professorService.update(professor);
         if (newProfessor == null) {
             return AjaxResponse.error(400, "Professor("+professor.getId()+") is " +
@@ -57,7 +66,10 @@ public class ProfessorController {
 
     // TODO user auth
     @DeleteMapping("")
-    public @ResponseBody AjaxResponse deleteProfessor(@RequestBody  Professor professor) {
+    public @ResponseBody AjaxResponse deleteProfessor(@RequestHeader(
+            "token") String token, @RequestBody  Professor professor) {
+        if (!authenticationService.isValidToken(token))
+            return AjaxResponse.notLoggedIn();
         if (professorService.delete(professor))
             return AjaxResponse.success();
         return AjaxResponse.error(400, "Invalid professor("+professor.getId()+")");
