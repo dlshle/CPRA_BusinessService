@@ -26,12 +26,14 @@ public class UserController {
     public @ResponseBody
     AjaxResponse addUser(@RequestBody User user) {
         UserPV newUser;
-        if (user.getUsername() == null || user.getUsername().length() < 5)
-            return AjaxResponse.error(400,
-                    "Invalid username" + user.getUsername());
         if (user.getEmail() == null || user.getEmail().length() < 6)
             return AjaxResponse.error(400, "Invalid email("+user.getEmail()+
                     ")");
+        if (user.getUsername() == null || user.getUsername().isEmpty())
+            user.setUsername(user.getEmail());
+        if (user.getUsername().length() < 5)
+            return AjaxResponse.error(400,
+                    "Invalid username" + user.getUsername());
         try {
             newUser = userService.add(user);
         } catch (DuplicateUserNameException dune) {
