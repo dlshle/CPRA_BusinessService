@@ -45,4 +45,5 @@ public class User implements Serializable {
     private Date createdDate;
     @JsonIgnore
     private String salt;
+    private boolean isAdmin = false;
 }

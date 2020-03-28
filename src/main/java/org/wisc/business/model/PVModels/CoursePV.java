@@ -1,9 +1,6 @@
 package org.wisc.business.model.PVModels;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import org.wisc.business.model.BusinessModel.Course;
 import org.wisc.business.model.BusinessModel.Term;
 
@@ -15,6 +12,7 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class CoursePV implements Serializable {
     private String id;
@@ -33,7 +31,8 @@ public class CoursePV implements Serializable {
 
     public Course toRawType() {
         List<String> tIds = new LinkedList<>();
-        terms.forEach((t)->tIds.add(t.id));
+        if (terms != null)
+            terms.forEach((t)->tIds.add(t.id));
         return new Course(id, name, description, tIds);
     }
 }

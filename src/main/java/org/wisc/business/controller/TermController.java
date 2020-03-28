@@ -9,13 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import org.wisc.business.model.AjaxResponse;
 import org.wisc.business.model.BusinessModel.Season;
 import org.wisc.business.model.BusinessModel.Term;
-import org.wisc.business.model.PVModels.CoursePV;
-import org.wisc.business.model.PVModels.ProfessorPV;
-import org.wisc.business.model.PVModels.TermPV;
-import org.wisc.business.service.AuthenticationService;
-import org.wisc.business.service.CourseService;
-import org.wisc.business.service.ProfessorService;
-import org.wisc.business.service.TermService;
+import org.wisc.business.model.PVModels.*;
+import org.wisc.business.model.UserModel.User;
+import org.wisc.business.service.*;
 
 import javax.annotation.Resource;
 import javax.websocket.server.PathParam;
@@ -37,6 +33,9 @@ public class TermController {
     @Resource
     AuthenticationService authenticationService;
 
+    @Resource
+    UserService userService;
+
     @Autowired
     MongoTemplate mongoTemplate;
 
@@ -53,13 +52,12 @@ public class TermController {
                 AjaxResponse.success(newTerm));
     }
 
-    // TODO user auth
     @PutMapping("")
     public @ResponseBody AjaxResponse updateTerm(@RequestHeader("token") String token
-            ,@RequestBody Term term) {
+            ,@RequestBody TermPV term) {
         if (!authenticationService.isValidToken(token))
             return AjaxResponse.notLoggedIn();
-        Term newTerm = termService.update(term);
+        TermPV newTerm = termService.update(term.toRawType());
         if (newTerm == null) {
             return AjaxResponse.error(400, "Term("+term.getId()+") is " +
                     "invalid.");
@@ -101,10 +99,10 @@ public class TermController {
 
     @GetMapping("/courseName/{courseName}")
     public @ResponseBody AjaxResponse findByCourseName(@PathVariable String courseName) {
-        CoursePV quriedCourse = courseService.findByName(courseName);
-        if (quriedCourse == null)
+        CoursePV queriedCourse = courseService.findByName(courseName);
+        if (queriedCourse == null)
             return AjaxResponse.success(new LinkedList<Term>());
-        return AjaxResponse.success(termService.findByCourseId(quriedCourse.getId()));
+        return AjaxResponse.success(termService.findByCourseId(queriedCourse.getId()));
     }
 
     @GetMapping("/courseId/{courseId}")
@@ -187,14 +185,45 @@ public class TermController {
         return AjaxResponse.success(mongoTemplate.find(query, Term.class));
     }
 
-    // TODO user auth
+    public AjaxResponse doFavoriteOrUnFavorite(String token, TermPV term,
+                                         boolean isFavorite) {
+        User currentUser = authenticationService.getCurrentUser(token);
+        if (currentUser == null)
+            return AjaxResponse.notLoggedIn();
+        if (term == null || term.getId() == null)
+            return AjaxResponse.error(400, "Invalid term or term id");
+        UserPV responseData = (isFavorite?userService.favorite(currentUser,
+                term.getId()):userService.unfavorite(currentUser,
+                term.getId()));
+        if (responseData == null)
+            return AjaxResponse.error(400, "failed to update user favorite " +
+                    "list.");
+        return AjaxResponse.success(responseData);
+    }
+
+    @PutMapping("/favorite")
+    public @ResponseBody AjaxResponse favoriteTerm(@RequestHeader(
+            "token") String token, @RequestBody TermPV term) {
+       return doFavoriteOrUnFavorite(token, term, true);
+    }
+
+    @PutMapping("/unfavorite")
+    public @ResponseBody AjaxResponse unfavoriteTerm(@RequestHeader(
+            "token") String token, @RequestBody TermPV term) {
+        return doFavoriteOrUnFavorite(token, term, false);
+    }
+
     @DeleteMapping("")
     public @ResponseBody
     AjaxResponse deleteTerm(@RequestHeader("token") String token,
-                            @RequestBody Term term) {
-        if (!authenticationService.isValidToken(token))
+                            @RequestBody TermPV term) {
+        User currentUser = authenticationService.getCurrentUser(token);
+        if (currentUser == null)
             return AjaxResponse.notLoggedIn();
-        if (termService.delete(term))
+        if (!currentUser.isAdmin())
+            return AjaxResponse.error(400, "Only admin can remove this term" +
+                    " from database");
+        if (termService.delete(term.toRawType()))
             return AjaxResponse.success();
         return AjaxResponse.error(400, "Invalid term("+term.getId()+")");
     }

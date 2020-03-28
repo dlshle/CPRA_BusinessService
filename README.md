@@ -173,8 +173,8 @@ Auth endpoints:
 
 User endpoints:
 - Register: POST /v1/users/
-- *Update User Info*: PUT /v1/users/
-- *Remove User*: DELETE /v1/users/
+- *Update User Info(Only user or admin can resign a user)*: PUT /v1/users/
+- *Remove User(Only user or admin can resign a user)*: DELETE /v1/users/
 - Get All Users: GET /v1/users/
 - Get User By Id: GET /v1/users/{id}
 - Get User By Email: GET /v1/users/email/{email}
@@ -184,15 +184,17 @@ User endpoints:
 Course endpoints:
 - *Upload Course*: POST /v1/courses/
 - *Update Course*: PUT /v1/courses/
-- *Remove Course*: DELETE /v1/courses/
+- *Remove Course(Requires admin privilege)*: DELETE /v1/courses/
 - Get All Courses: GET /v1/courses/
 - Get Course By Id: GET /v1/courses/{id}
 - Get Course By Name: GET /v1/courses/name/{name}
 
 Term endpoints:
 - *Add Term(requires login)*: POST /v1/terms/
-- *Update Term(requires login)*: PUT /v1/terms/
-- *Remove Term(requires login)*: DELETE /v1/terms/
+- *Update Term*: PUT /v1/terms/
+- *Remove Term(Requires admin privilege)*: DELETE /v1/terms/
+- *Favorite Term*: PUT /v1/terms/favorite
+- *Unfavorite Term*: PUT /v1/terms/unfavorite
 - Get All Terms: GET /v1/terms/
 - Search All Terms By Course Id: GET /v1/terms/courseId/{course_id}
 - Search All Terms By Course Name: GET /v1/terms/courseName/{course_name}
@@ -207,7 +209,7 @@ Term endpoints:
 Professor endpoints:
 - *Upload Professor*: POST /v1/professors/
 - *Update Professor*: PUT /v1/professors/
-- *Remove Professor*: DELETE /v1/professors/
+- *Remove Professor(Requires admin privilege)*: DELETE /v1/professors/
 - Get All Professors: GET /v1/professors/
 - Get Professor By Id: GET /v1/professors/{id}
 - Search All Professor By Name: GET /v1/professors/name/{name}
@@ -215,9 +217,28 @@ Professor endpoints:
 Comment endpoints:
 - *Upload Comment*: POST /v1/comments/
 - *Update Comment*: PUT /v1/comments/
-- *Remove Comment*: DELETE /v1/comments/
+- *Remove Comment(either admin or author can remove)*: DELETE /v1/comments/
 - Get All Comments: GET /v1/comments/
 - Get Comment By Id: GET /v1/comments/{id}
+
+### Back-reference relations
+Since multiple back-reference relations exist in the data model. Some are 
+handled such that one data updates, its parent or friend data will also update.
+
+Back-reference relations and handlings:
+- Term
+    - When a term is updated, professors in its professor list and its parent 
+    course will also be updated.
+    - When a term is removed, professors in its professor list and its parent 
+    courses will also be updated. Corresponding comments will also be removed.
+- Professor
+    - When a professor is updated, terms in its termIds list will also be 
+    updated.
+    - When a professor is removed, terms in its termIds list will also be 
+    updated.
+- Course
+    - When a course is updated, its corresponding terms will also be updated.
+    - When a course is removed, its corresponding terms will also be removed.
 
 ## User authentication
 JWT token is used for validating current login user. Some APIs require user 

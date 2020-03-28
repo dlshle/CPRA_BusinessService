@@ -10,10 +10,7 @@ import org.wisc.business.model.PVModels.UserPV;
 import org.wisc.business.model.UserModel.User;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -137,8 +134,23 @@ public class UserService {
                 throw new DuplicateUserNameException();
             oldUser.setUsername(user.getUsername());
         }
-        if (user.getFavorite() != null)
-            oldUser.setFavorite(user.getFavorite());
+        if (user.getFavorite() != null) {
+            HashSet<String> oldIds = new HashSet<>(user.getFavorite());
+            LinkedList<String> newIds = new LinkedList<>();
+            user.getFavorite().forEach((tid)->{
+                if (oldIds.contains(tid)) {
+                    oldIds.remove(tid);
+                    newIds.add(tid);
+                } else {
+                    // to add
+                    Term t = termService.findRawById(tid);
+                    if (t != null)
+                        newIds.add(tid);
+                }
+            });
+            oldIds.forEach((tid)->newIds.remove(tid));
+            oldUser.setFavorite(newIds);
+        }
         User result;
         try {
             result = userDAO.save(user);
@@ -153,5 +165,35 @@ public class UserService {
             return false;
         userDAO.delete(user);
         return true;
+    }
+
+    public UserPV favorite(User user, String termId) {
+        if (user == null || termId == null)
+            return null;
+        if (user.getFavorite().contains(termId))
+            return null;
+        List<String> tIds = user.getFavorite();
+        tIds.add(termId);
+        user.setFavorite(tIds);
+        try {
+            return update(user);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public UserPV unfavorite(User user, String termId) {
+        if (user == null || termId == null)
+            return null;
+        if (!user.getFavorite().contains(termId))
+            return null;
+        List<String> tIds = user.getFavorite();
+        tIds.remove(termId);
+        user.setFavorite(tIds);
+        try {
+            return update(user);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

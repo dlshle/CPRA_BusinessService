@@ -1,12 +1,16 @@
 package org.wisc.business.authentication;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.wisc.business.model.UserModel.User;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.List;
 
 public class SecurityUtil {
     public static final long EXPIRATION_PERIOD = 1800000l;
@@ -79,12 +83,29 @@ public class SecurityUtil {
      * @return signed token
      */
     public static String generateToken(User user) {
-        String token = "";
+        String token;
         token = JWT.create()
                         .withIssuedAt(new Date(System.currentTimeMillis()))
                         .withAudience(user.getId())
                         .sign(Algorithm.HMAC256(user.getPassword())); //no
         // worries, password is hashed
         return token;
+    }
+
+    public static String getUserIdFromToken(String token) {
+        Object o = JWT.decode(token);
+        List<String> audience = JWT.decode(token).getAudience();
+        return JWT.decode(token).getAudience().get(0);
+    }
+
+    public static boolean verifyTokenWithPassword(String token,
+                                                 String password) {
+        JWTVerifier verifier =  JWT.require(Algorithm.HMAC256(password)).build();
+        try {
+            verifier.verify(token);
+        } catch (JWTVerificationException e) {
+            return false;
+        }
+        return true;
     }
 }

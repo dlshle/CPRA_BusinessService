@@ -1,10 +1,8 @@
 package org.wisc.business.model.PVModels;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import org.wisc.business.model.BusinessModel.Comment;
+import org.wisc.business.model.BusinessModel.Term;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,20 +10,21 @@ import java.util.Date;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class CommentPV implements Serializable {
     private String id;
-    private String termId;
+    private NameIdPair term;
     private String content;
     private UserPV author;
     private UserPV lastEditedBy;
     private Date lastModifiedDate;
     private Double rating;
 
-    public CommentPV(Comment comment, UserPV author,
+    public CommentPV(Comment comment, Term term, UserPV author,
                      UserPV lastEditedBy) {
         this.id = comment.getId();
-        this.termId = comment.getTermId();
+        this.term = new NameIdPair(term.getName(), term.getId());
         this.content = comment.getContent();
         this.author = author;
         this.lastEditedBy = lastEditedBy;
@@ -34,7 +33,7 @@ public class CommentPV implements Serializable {
     }
 
     public Comment toRawType() {
-        return new Comment(id, termId, content, author.getId(),
+        return new Comment(id, term.getId(), content, author.getId(),
                 lastEditedBy.getId(), lastModifiedDate, rating);
     }
 }

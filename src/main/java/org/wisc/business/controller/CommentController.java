@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.wisc.business.model.AjaxResponse;
 import org.wisc.business.model.BusinessModel.Comment;
 import org.wisc.business.model.PVModels.CommentPV;
+import org.wisc.business.model.UserModel.User;
 import org.wisc.business.service.AuthenticationService;
 import org.wisc.business.service.CommentService;
 
@@ -25,13 +26,16 @@ public class CommentController {
     @Resource
     AuthenticationService authenticationService;
 
-    // TODO user auth
     @PostMapping("")
     public @ResponseBody  AjaxResponse addComment(@RequestHeader(
             "token") String token, @RequestBody  Comment comment) {
-        if (!authenticationService.isValidToken(token))
+        User currentUser = authenticationService.getCurrentUser(token);
+        if (currentUser == null)
             return AjaxResponse.notLoggedIn();
+        comment.setAuthorId(currentUser.getId());
         CommentPV savedComment = commentService.add(comment);
+        if (savedComment == null)
+            return AjaxResponse.error(400, "Invalid term id");
         return (AjaxResponse.success(savedComment));
     }
 
@@ -50,12 +54,14 @@ public class CommentController {
         return AjaxResponse.success(comment);
     }
 
-    // TODO user auth
     @PutMapping("")
     public @ResponseBody AjaxResponse updateComment(@RequestHeader(
-            "token") String token, @RequestBody Comment comment) {
-        if (!authenticationService.isValidToken(token))
+            "token") String token, @RequestBody CommentPV commentPv) {
+        User currentUser = authenticationService.getCurrentUser(token);
+        if (currentUser == null)
             return AjaxResponse.notLoggedIn();
+        Comment comment = commentPv.toRawType();
+        comment.setLastEditedBy(currentUser.getId());
         // update the comment timestamp on server
         comment.setLastModifiedDate(new Date());
         CommentPV newComment = commentService.update(comment);
@@ -66,12 +72,17 @@ public class CommentController {
         return AjaxResponse.success(newComment);
     }
 
-    // TODO user auth
     @DeleteMapping("")
     public @ResponseBody AjaxResponse deleteComment(@RequestHeader(
-            "token") String token, @RequestBody Comment comment) {
-        if (!authenticationService.isValidToken(token))
+            "token") String token, @RequestBody CommentPV commentPv) {
+        User currentUser = authenticationService.getCurrentUser(token);
+        if (currentUser == null)
             return AjaxResponse.notLoggedIn();
+        Comment comment = commentPv.toRawType();
+        if (!currentUser.getId().equals(comment.getAuthorId()))
+            return AjaxResponse.error(400,
+                    "Invalid credential. Only " + comment.getAuthorId() + " " +
+                            "can remove this comment.");
         if (commentService.delete(comment))
             return AjaxResponse.success();
         return AjaxResponse.error(400, "Invalid comment("+comment.getId()+")");

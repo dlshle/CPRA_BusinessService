@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.wisc.business.dao.CommentDAO;
 import org.wisc.business.model.BusinessModel.Comment;
+import org.wisc.business.model.BusinessModel.Course;
+import org.wisc.business.model.BusinessModel.Term;
 import org.wisc.business.model.PVModels.CommentPV;
 import org.wisc.business.model.PVModels.UserPV;
 import org.wisc.business.model.UserModel.User;
@@ -22,6 +24,9 @@ public class CommentService {
     @Resource
     UserService userService;
 
+    @Resource
+    TermService termService;
+
     public CommentPV convertCommentToCommentPV(Comment c) {
         if (c == null)
             return null;
@@ -29,7 +34,10 @@ public class CommentService {
         UserPV lastEditor = null;
         if (c.getLastEditedBy() != null)
             lastEditor = userService.findById(c.getLastEditedBy());
-        return new CommentPV(c, author, lastEditor);
+        Term term = null;
+        if (c.getTermId() != null)
+            term = termService.findRawById(c.getTermId());
+        return new CommentPV(c, term, author, lastEditor);
     }
 
     public List<CommentPV> convertCommentsToCommentPVs(List<Comment> comments) {
@@ -60,8 +68,22 @@ public class CommentService {
     }
 
     public CommentPV add(Comment comment) {
+        if (comment.getTermId() == null || comment.getAuthorId() == null)
+            return null;
         comment.setLastModifiedDate(new Date());
         comment.setLastEditedBy(comment.getAuthorId());
+        Term term = termService.findRawById(comment.getTermId());
+        if (term == null)
+            return null;
+        CommentPV savedCommentPV =
+                convertCommentToCommentPV(commentDAO.save(comment));
+        List<String> termIds = term.getCommentIds();
+        termIds.add(savedCommentPV.getId());
+        term.setCommentIds(termIds);
+        if (comment.getRating() != null)
+            term.setAverageRating((term.getAverageRating()*(termIds.size()-1)+comment.getRating()) / (termIds.size()*1.0));
+        if (termService.update(term) == null)
+            return null;
         return convertCommentToCommentPV(commentDAO.save(comment));
     }
 
@@ -81,6 +103,20 @@ public class CommentService {
 
     public boolean delete(Comment comment) {
         if (findById(comment.getId()) == null)
+            return false;
+        if (comment.getTermId() != null) {
+            Term term = termService.findRawById(comment.getTermId());
+            if (term != null) {
+                if (term.getCommentIds().remove(comment.getId()) && comment.getRating() != null)
+                    term.setAverageRating((term.getAverageRating()*term.getCommentIds().size() - comment.getRating())/(term.getCommentIds().size()-1));
+            }
+        }
+        commentDAO.delete(comment);
+        return true;
+    }
+
+    public boolean deleteRaw(Comment comment) {
+         if (findById(comment.getId()) == null)
             return false;
         commentDAO.delete(comment);
         return true;

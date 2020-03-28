@@ -22,7 +22,6 @@ public class UserController {
     @Resource
     AuthenticationService authenticationService;
 
-    // TODO user auth
     @PostMapping("")
     public @ResponseBody
     AjaxResponse addUser(@RequestBody User user) {
@@ -47,15 +46,19 @@ public class UserController {
                 AjaxResponse.success(newUser));
     }
 
-    // TODO user auth
     @PutMapping("")
     public @ResponseBody AjaxResponse updateUser(@RequestHeader("token") String token
-            ,@RequestBody User user) {
-        if (!authenticationService.isValidToken(token))
+            ,@RequestBody UserPV user) {
+        User currentUser = authenticationService.getCurrentUser(token);
+        if (currentUser == null)
             return AjaxResponse.notLoggedIn();
+        if (!currentUser.getId().equals(user.getId()) && !currentUser.isAdmin())
+            return AjaxResponse.error(400,
+                    "Only the user("+user.getUsername()+") or admin can " +
+                            "update this account.");
         UserPV newUser = null;
         try {
-            newUser = userService.update(user);
+            newUser = userService.update(user.toRawType());
         } catch (DuplicateUserNameException dune) {
             return AjaxResponse.error(400,
                     "Duplicate username(" + user.getUsername()+")");
@@ -107,14 +110,18 @@ public class UserController {
         return AjaxResponse.success(userService.findByName(name));
     }
 
-    // TODO user auth
     @DeleteMapping("")
     public @ResponseBody
     AjaxResponse deleteUser(@RequestHeader("token") String token,
-                            @RequestBody User user) {
-        if (!authenticationService.isValidToken(token))
+                            @RequestBody UserPV user) {
+        User currentUser = authenticationService.getCurrentUser(token);
+        if (currentUser == null)
             return AjaxResponse.notLoggedIn();
-        if (userService.delete(user))
+        if (!currentUser.getId().equals(user.getId()) && !currentUser.isAdmin())
+            return AjaxResponse.error(400,
+                    "Only the user("+user.getUsername()+") or admin can " +
+                            "resign this account.");
+        if (userService.delete(user.toRawType()))
             return AjaxResponse.success();
         return AjaxResponse.error(400, "Invalid user("+user.getId()+")");
     }

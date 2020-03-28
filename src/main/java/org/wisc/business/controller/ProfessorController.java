@@ -3,7 +3,9 @@ package org.wisc.business.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.wisc.business.model.AjaxResponse;
+import org.wisc.business.model.BusinessModel.Professor;
 import org.wisc.business.model.PVModels.ProfessorPV;
+import org.wisc.business.model.UserModel.User;
 import org.wisc.business.service.AuthenticationService;
 import org.wisc.business.service.ProfessorService;
 
@@ -18,20 +20,18 @@ public class ProfessorController {
     @Resource
     AuthenticationService authenticationService;
 
-    // TODO user auth
     @PostMapping("")
     public @ResponseBody
     AjaxResponse addProfessorPV(@RequestHeader("token") String token,
-                              @RequestBody ProfessorPV professor) {
+                              @RequestBody Professor professor) {
         if (!authenticationService.isValidToken(token))
             return AjaxResponse.notLoggedIn();
-        ProfessorPV newProfessorPV = professorService.add(professor.toRawType());
+        ProfessorPV newProfessorPV = professorService.add(professor);
         return (newProfessorPV == null?AjaxResponse.error(400,
                 "ProfessorPV("+professor.getId()+") already exists."):
                 AjaxResponse.success(newProfessorPV));
     }
 
-    // TODO user auth
     @PutMapping("")
     public @ResponseBody AjaxResponse updateProfessorPV(@RequestHeader(
             "token") String token, @RequestBody ProfessorPV professor) {
@@ -64,13 +64,17 @@ public class ProfessorController {
         return AjaxResponse.success(professorService.findByName(name));
     }
 
-    // TODO user auth
     @DeleteMapping("")
     public @ResponseBody AjaxResponse deleteProfessorPV(@RequestHeader(
-            "token") String token, @RequestBody  ProfessorPV professor) {
-        if (!authenticationService.isValidToken(token))
+            "token") String token, @RequestBody  ProfessorPV professorPv) {
+        User currentUser = authenticationService.getCurrentUser(token);
+        if (currentUser == null)
             return AjaxResponse.notLoggedIn();
-        if (professorService.delete(professor.toRawType()))
+        Professor professor = professorPv.toRawType();
+        if (!currentUser.isAdmin())
+            return AjaxResponse.error(400, "Only admin can remove this " +
+                    "professor from database.");
+        if (professorService.delete(professor))
             return AjaxResponse.success();
         return AjaxResponse.error(400, "Invalid professor("+professor.getId()+")");
     }
