@@ -2,6 +2,7 @@ package org.wisc.business.authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.wisc.business.cache.LFUCache;
+import org.wisc.business.model.PVModels.UserPV;
 import org.wisc.business.model.UserModel.User;
 import org.wisc.business.service.DuplicateEmailException;
 import org.wisc.business.service.DuplicateUserNameException;
@@ -30,7 +31,7 @@ public class UserAuthManager {
         public User updateUser(User newUser) {
             timeEffective = System.currentTimeMillis();
             Future<User> result = cacheThreadExecutor.submit(()-> {
-                User userFromDatabase = null;
+                UserPV userFromDatabase = null;
                 try {
                     userFromDatabase = userService.update(newUser);
                 } catch (DuplicateEmailException e) {
@@ -40,7 +41,7 @@ public class UserAuthManager {
                 } finally {
                     if (userFromDatabase != null) {
                         synchronized (this) {
-                            user = userFromDatabase;
+                            user = userFromDatabase.toRawType();
                         }
                         return user;
                     }

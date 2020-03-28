@@ -9,6 +9,8 @@ Test user:
 }
 ```
 
+Add user status token from /v1/auth to RequestHeader to enable all services.
+
 ## TODO:
 - Add back reference(e.g. new term->use professorIds to back reference 
 professors in professor.termIds)
@@ -48,10 +50,19 @@ All ids are string.
 	email: "String", 
 	password: "String",  //passwd on the front-end
 	salt: "String",
-	favorites: ["1", "2", "3"],
+	favorites: [
+	    {
+            name: "name",
+            id: "1"
+        }, 
+        {
+            name: "name1",
+            id: "2"
+        }
+	],
 	createdDate: date_type
 }
-// terms is a list of term ids
+// terms is a list of term name, id pair
 ```
 ### Course Collection
 ```
@@ -59,7 +70,12 @@ All ids are string.
 	id: "1",
 	name: "String",
 	description: "String",
-	termIds: ["1", "2", "3"]
+	terms: [
+	    {
+	        name: "term",
+	        id: "1"
+        }
+	]
 }
 // terms is a list of term ids
 ```
@@ -70,25 +86,39 @@ All ids are string.
 	courseId: "1", //reference to parent course
 	name: "String",
 	semester: "String", //All uppercase{SPRING, SUMMER, FALL}
-	professorIds: ["1", "2"],
+	professors: [
+	    {
+	        name: "p",
+	        id: "1"
+        }, 
+        {
+            name: "p1",
+            id: "2"
+        },
+	].
 	description: "String",
-	rating: 1.5,
-	comments: ["1", "2", "3"]
+	averageRating: 1.5,
+	comments: [
+	    {
+	        name: "c1",
+	        id: "1"
+	    }
+	]
 }
-// taughBy is a list of professor ids
+// professors is a list of professor name, id pair
 // rating is the average rating from comments
-// comments is a list of comment ids
+// comments is a list of comment name, id pair
 ```
 ### Comment Collection
 ```
 {
 	id: "1",
 	content: "String",
-	author: "1",
-	lastEditedBy: "1",
-	lastModifiedDate: "String"
+	author: {name: "author", id: "1"},
+	lastEditedBy: {name: "new_author", id: "2"},
+	lastModifiedDate: Date
 }
-// author is the user id of this comment
+// author and lastEditedBy are the name, id pair of the author of this comment
 ```
 ### Professor Collection
 ```
@@ -96,7 +126,12 @@ All ids are string.
 	id: "1",
 	name: "String",
 	description: "String",
-	termIds: ["1", "2", "3"]
+	terms: [
+	    {
+	        name: "term",
+	        id: "1"
+	    }
+	]
 }
 // terms is a list of term ids
 ```
@@ -132,7 +167,9 @@ All service start with "Get" and other verbs means it responds with an object.
 
 Auth endpoints:
 - *Login*: POST /v1/auth/login/
-- *Validate token*:
+    - Responds with a token corresponding to the login user.
+- *Validate token*: GET /v1/auth/token/{token}
+    - Responds with
 
 User endpoints:
 - Register: POST /v1/users/

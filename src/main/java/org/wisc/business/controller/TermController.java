@@ -7,10 +7,11 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.web.bind.annotation.*;
 import org.wisc.business.model.AjaxResponse;
-import org.wisc.business.model.BusinessModel.Course;
-import org.wisc.business.model.BusinessModel.Professor;
 import org.wisc.business.model.BusinessModel.Season;
 import org.wisc.business.model.BusinessModel.Term;
+import org.wisc.business.model.PVModels.CoursePV;
+import org.wisc.business.model.PVModels.ProfessorPV;
+import org.wisc.business.model.PVModels.TermPV;
 import org.wisc.business.service.AuthenticationService;
 import org.wisc.business.service.CourseService;
 import org.wisc.business.service.ProfessorService;
@@ -19,7 +20,6 @@ import org.wisc.business.service.TermService;
 import javax.annotation.Resource;
 import javax.websocket.server.PathParam;
 import java.util.LinkedList;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -47,7 +47,7 @@ public class TermController {
                          @RequestBody Term term) {
         if (!authenticationService.isValidToken(token))
             return AjaxResponse.notLoggedIn();
-        Term newTerm = termService.add(term);
+        TermPV newTerm = termService.add(term);
         return (newTerm == null?AjaxResponse.error(400,
                 "Term("+term.getId()+") already exists."):
                 AjaxResponse.success(newTerm));
@@ -74,7 +74,7 @@ public class TermController {
 
     @GetMapping("/{id}")
     public @ResponseBody AjaxResponse getTerm(@PathVariable String id) {
-        Term term = termService.findById(id);
+        TermPV term = termService.findById(id);
         if (term == null) {
             return AjaxResponse.error(400, "Invalid term id(" + id + ")");
         }
@@ -101,7 +101,7 @@ public class TermController {
 
     @GetMapping("/courseName/{courseName}")
     public @ResponseBody AjaxResponse findByCourseName(@PathVariable String courseName) {
-        Course quriedCourse = courseService.findByName(courseName);
+        CoursePV quriedCourse = courseService.findByName(courseName);
         if (quriedCourse == null)
             return AjaxResponse.success(new LinkedList<Term>());
         return AjaxResponse.success(termService.findByCourseId(quriedCourse.getId()));
@@ -135,7 +135,7 @@ public class TermController {
                                                 @PathParam("ratingFrom") Double ratingFrom,
                                                 @PathParam("ratingTo") Double ratingTo,
                                                 @PathParam("taughtBy") String taughtBy) {
-        Course quriedCourse = null;
+        CoursePV quriedCourse = null;
         if (courseName != null && !courseName.isEmpty()) {
             quriedCourse = courseService.findByName(courseName);
         }
@@ -179,7 +179,8 @@ public class TermController {
             // TODO use professor ids to query
             String[] professorNames = taughtBy.split(",");
             for (String pName:professorNames) {
-                Professor p = professorService.findFirstOccuranceByName(pName);
+                ProfessorPV p =
+                        professorService.findFirstOccuranceByName(pName);
             }
         }
         Query query = new Query(headCriteria);

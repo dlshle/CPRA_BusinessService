@@ -3,6 +3,7 @@ package org.wisc.business.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.wisc.business.model.AjaxResponse;
+import org.wisc.business.model.PVModels.UserPV;
 import org.wisc.business.model.UserModel.User;
 import org.wisc.business.service.AuthenticationService;
 import org.wisc.business.service.DuplicateEmailException;
@@ -25,7 +26,7 @@ public class UserController {
     @PostMapping("")
     public @ResponseBody
     AjaxResponse addUser(@RequestBody User user) {
-        User newUser;
+        UserPV newUser;
         if (user.getUsername() == null || user.getUsername().length() < 5)
             return AjaxResponse.error(400,
                     "Invalid username" + user.getUsername());
@@ -52,7 +53,7 @@ public class UserController {
             ,@RequestBody User user) {
         if (!authenticationService.isValidToken(token))
             return AjaxResponse.notLoggedIn();
-        User newUser = null;
+        UserPV newUser = null;
         try {
             newUser = userService.update(user);
         } catch (DuplicateUserNameException dune) {
@@ -76,7 +77,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public @ResponseBody AjaxResponse getUser(@PathVariable String id) {
-        User user = userService.findById(id);
+        UserPV user = userService.findById(id);
         if (user == null) {
             return AjaxResponse.error(400, "Invalid user id(" + id + ")");
         }
@@ -85,7 +86,7 @@ public class UserController {
 
     @GetMapping("/username/{username}")
     public @ResponseBody AjaxResponse getCourseByUserName(@PathVariable String username) {
-        User user = userService.findByUsername(username);
+        UserPV user = userService.findByUsername(username);
         if (user == null) {
             return AjaxResponse.error(400, "Invalid username(" + username + ")");
         }
@@ -94,7 +95,7 @@ public class UserController {
 
     @GetMapping("/email/{email}")
     public @ResponseBody AjaxResponse getCourseByEmail(@PathVariable String email) {
-        User user = userService.findByEmail(email);
+        UserPV user = userService.findByEmail(email);
         if (user == null) {
             return AjaxResponse.error(400, "Invalid email(" + email + ")");
         }

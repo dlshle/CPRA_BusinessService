@@ -3,7 +3,7 @@ package org.wisc.business.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.wisc.business.model.AjaxResponse;
-import org.wisc.business.model.BusinessModel.Professor;
+import org.wisc.business.model.PVModels.ProfessorPV;
 import org.wisc.business.service.AuthenticationService;
 import org.wisc.business.service.ProfessorService;
 
@@ -21,38 +21,38 @@ public class ProfessorController {
     // TODO user auth
     @PostMapping("")
     public @ResponseBody
-    AjaxResponse addProfessor(@RequestHeader("token") String token,
-                              @RequestBody Professor professor) {
+    AjaxResponse addProfessorPV(@RequestHeader("token") String token,
+                              @RequestBody ProfessorPV professor) {
         if (!authenticationService.isValidToken(token))
             return AjaxResponse.notLoggedIn();
-        Professor newProfessor = professorService.add(professor);
-        return (newProfessor == null?AjaxResponse.error(400,
-                "Professor("+professor.getId()+") already exists."):
-                AjaxResponse.success(newProfessor));
+        ProfessorPV newProfessorPV = professorService.add(professor.toRawType());
+        return (newProfessorPV == null?AjaxResponse.error(400,
+                "ProfessorPV("+professor.getId()+") already exists."):
+                AjaxResponse.success(newProfessorPV));
     }
 
     // TODO user auth
     @PutMapping("")
-    public @ResponseBody AjaxResponse updateProfessor(@RequestHeader(
-            "token") String token, @RequestBody Professor professor) {
+    public @ResponseBody AjaxResponse updateProfessorPV(@RequestHeader(
+            "token") String token, @RequestBody ProfessorPV professor) {
         if (!authenticationService.isValidToken(token))
             return AjaxResponse.notLoggedIn();
-        Professor newProfessor = professorService.update(professor);
-        if (newProfessor == null) {
-            return AjaxResponse.error(400, "Professor("+professor.getId()+") is " +
+        ProfessorPV newProfessorPV = professorService.update(professor.toRawType());
+        if (newProfessorPV == null) {
+            return AjaxResponse.error(400, "ProfessorPV("+professor.getId()+") is " +
                     "invalid.");
         }
-        return AjaxResponse.success(newProfessor);
+        return AjaxResponse.success(newProfessorPV);
     }
 
     @GetMapping("")
-    public @ResponseBody AjaxResponse getAllProfessors() {
+    public @ResponseBody AjaxResponse getAllProfessorPVs() {
         return AjaxResponse.success(professorService.all());
     }
 
     @GetMapping("/{id}")
-    public @ResponseBody AjaxResponse getProfessor(@PathVariable String id) {
-        Professor professor = professorService.findById(id);
+    public @ResponseBody AjaxResponse getProfessorPV(@PathVariable String id) {
+        ProfessorPV professor = professorService.findById(id);
         if (professor == null) {
             return AjaxResponse.error(400, "Invalid professor id(" + id + ")");
         }
@@ -66,11 +66,11 @@ public class ProfessorController {
 
     // TODO user auth
     @DeleteMapping("")
-    public @ResponseBody AjaxResponse deleteProfessor(@RequestHeader(
-            "token") String token, @RequestBody  Professor professor) {
+    public @ResponseBody AjaxResponse deleteProfessorPV(@RequestHeader(
+            "token") String token, @RequestBody  ProfessorPV professor) {
         if (!authenticationService.isValidToken(token))
             return AjaxResponse.notLoggedIn();
-        if (professorService.delete(professor))
+        if (professorService.delete(professor.toRawType()))
             return AjaxResponse.success();
         return AjaxResponse.error(400, "Invalid professor("+professor.getId()+")");
     }

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.wisc.business.model.AjaxResponse;
 import org.wisc.business.model.BusinessModel.Comment;
+import org.wisc.business.model.PVModels.CommentPV;
 import org.wisc.business.service.AuthenticationService;
 import org.wisc.business.service.CommentService;
 
@@ -14,7 +15,6 @@ import java.util.List;
 
 /**
  * CommentController
- * TODO: all POST, PUT, DELETE requests need user auth to proceed
  */
 @Slf4j
 @RestController
@@ -31,19 +31,19 @@ public class CommentController {
             "token") String token, @RequestBody  Comment comment) {
         if (!authenticationService.isValidToken(token))
             return AjaxResponse.notLoggedIn();
-        Comment savedComment = commentService.add(comment);
+        CommentPV savedComment = commentService.add(comment);
         return (AjaxResponse.success(savedComment));
     }
 
     @GetMapping("")
     public @ResponseBody AjaxResponse getAllComments() {
-        List<Comment> allComments = commentService.all();
+        List<CommentPV> allComments = commentService.all();
         return AjaxResponse.success(allComments);
     }
 
     @GetMapping("/{id}")
     public @ResponseBody AjaxResponse getComment(@PathVariable String id) {
-        Comment comment = commentService.findById(id);
+        CommentPV comment = commentService.findById(id);
         System.out.println("GET /v1/comments/"+id.toString()+":"+comment);
         if (comment == null)
             return AjaxResponse.error(400, "Invalid comment id.");
@@ -58,7 +58,7 @@ public class CommentController {
             return AjaxResponse.notLoggedIn();
         // update the comment timestamp on server
         comment.setLastModifiedDate(new Date());
-        Comment newComment = commentService.update(comment);
+        CommentPV newComment = commentService.update(comment);
         if (newComment == null) {
             return AjaxResponse.error(400, "Comment(" + comment.getId() + ") " +
                     "is invalid.");

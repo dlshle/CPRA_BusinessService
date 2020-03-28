@@ -4,7 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.wisc.business.dao.ProfessorDAO;
 import org.wisc.business.model.BusinessModel.Professor;
+import org.wisc.business.model.BusinessModel.Term;
+import org.wisc.business.model.PVModels.ProfessorPV;
+import org.wisc.business.model.PVModels.TermPV;
 
+import javax.annotation.Resource;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +18,25 @@ public class ProfessorService {
     @Autowired
     ProfessorDAO professorDAO;
 
-    public Professor findById(String id) {
+    @Resource
+    TermService termService;
+
+    public ProfessorPV convertProfessorToProfessorPV(Professor professor) {
+        if (professor == null)
+            return null;
+        List<Term> terms = new LinkedList<>();
+        if (professor.getTermIds() != null)
+            professor.getTermIds().forEach((tId)->terms.add(termService.findRawById(tId)));
+        return new ProfessorPV(professor, terms);
+    }
+
+    public List<ProfessorPV> convertProfessorsToProfessorPVs(List<Professor> professors) {
+        List<ProfessorPV> results = new LinkedList<>();
+        professors.forEach((p)->{results.add(convertProfessorToProfessorPV(p));});
+        return results;
+    }
+
+    public Professor findRawById(String id) {
         if (id == null)
             return null;
         Optional<Professor> result = professorDAO.findById(id);
@@ -22,24 +45,28 @@ public class ProfessorService {
         return result.get();
     }
 
-    public List<Professor> findByName(String name) {
-        return professorDAO.findAllByNameLike(name);
+    public ProfessorPV findById(String id) {
+        return convertProfessorToProfessorPV(findRawById(id));
     }
 
-    public Professor findFirstOccuranceByName(String name) {
-        return professorDAO.findByName(name);
+    public List<ProfessorPV> findByName(String name) {
+        return convertProfessorsToProfessorPVs(professorDAO.findAllByNameLike(name));
     }
 
-    public List<Professor> all() {
-        return professorDAO.findAll();
+    public ProfessorPV findFirstOccuranceByName(String name) {
+        return convertProfessorToProfessorPV(professorDAO.findByName(name));
     }
 
-    public Professor add(Professor professor) {
-        return professorDAO.save(professor);
+    public List<ProfessorPV> all() {
+        return convertProfessorsToProfessorPVs(professorDAO.findAll());
     }
 
-    public Professor update(Professor professor) {
-        Professor oldProfessor = findById(professor.getId());
+    public ProfessorPV add(Professor professor) {
+        return convertProfessorToProfessorPV(professorDAO.save(professor));
+    }
+
+    public ProfessorPV update(Professor professor) {
+        Professor oldProfessor = findRawById(professor.getId());
         if (oldProfessor == null)
             return null;
         if (professor.getName() != null && !professor.getName().equals(oldProfessor.getName()))
@@ -48,7 +75,7 @@ public class ProfessorService {
             oldProfessor.setDescription(professor.getDescription());
         if (professor.getTermIds() != null)
             oldProfessor.setTermIds(professor.getTermIds());
-        return professorDAO.save(oldProfessor);
+        return convertProfessorToProfessorPV(professorDAO.save(oldProfessor));
     }
 
     public boolean delete(Professor professor) {
