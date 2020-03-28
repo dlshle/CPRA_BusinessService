@@ -145,7 +145,7 @@ For all valid requests, the system responds with an AjaxResponse Object where
 ```
 {
     isSuccess: boolea,
-    code: int, // 200 for success, 400 for invalid request param
+    status: int, // 200 for success, 400 for invalid request param
     message: string, // all failed requests has a corresponding error message
     data: {object} // all success response has a corresponding object
 }
@@ -241,6 +241,7 @@ Tokens will be renewed every 30 minutes. Implementation details are unspecified.
 Considering using different ports for different services. Once a comment is 
 received, pass it to the Comment Filtering Service. Once a decision is made, 
 CFS saves the comment in MongoDB.
+∵傻逼阿三滚犊子了，这个得再考虑
 
 ## Future discussion
 Whether a distributed database is needed to cache the current login user tokens?
