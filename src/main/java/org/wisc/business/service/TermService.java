@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 import org.wisc.business.dao.TermDAO;
 import org.wisc.business.model.BusinessModel.*;
 import org.wisc.business.model.PVModels.CommentPV;
-import org.wisc.business.model.PVModels.CoursePV;
-import org.wisc.business.model.PVModels.ProfessorPV;
 import org.wisc.business.model.PVModels.TermPV;
 
 import javax.annotation.Resource;
@@ -34,7 +32,7 @@ public class TermService {
             return null;
         List<CommentPV> comments = new LinkedList<>();
         if (term.getCommentIds() != null)
-            term.getCommentIds().forEach((cId)->commentService.findById(cId));
+            term.getCommentIds().forEach((cId)->comments.add(commentService.findById(cId)));
         Course course = courseService.findRawById(term.getCourseId());
         List<Professor> professors = new LinkedList<>();
         if (term.getProfessorIds() != null)
@@ -95,45 +93,9 @@ public class TermService {
     }
 
     public Term updateRaw(Term term) {
-         Term oldTerm = findRawById(term.getId());
-        if (oldTerm == null)
+        if (term == null)
             return null;
-        if (term.getYear() != null && !term.getYear().equals(oldTerm.getYear()))
-            oldTerm.setYear(term.getYear());
-        if (term.getSeason() != null && !term.getSeason().equals(oldTerm.getSeason()))
-            oldTerm.setSeason(term.getSeason());
-        if (term.getDescription() != null && !term.getDescription().equals(oldTerm.getDescription()))
-            oldTerm.setDescription(term.getDescription());
-        if (term.getCourseId() != null && !term.getCourseId().equals(oldTerm.getCourseId())) {
-            oldTerm.setCourseId(term.getCourseId());
-        }
-        if (term.getProfessorIds() != null) {
-            HashSet<String> originalPids = new HashSet<>(oldTerm.getCommentIds());
-            List<String> newPids = new LinkedList<>();
-            term.getProfessorIds().forEach((pid)->{
-                if (!originalPids.contains(pid)) {
-                    // to add
-                    Professor p = professorService.findRawById(pid);
-                    if (p != null) {
-                        newPids.add(pid);
-                    }
-                } else {
-                    //
-                    originalPids.remove(pid);
-                    newPids.add(pid);
-                }
-            });
-            // to remove
-            originalPids.forEach((pid)->{
-                Professor p = professorService.findRawById(pid);
-                if (p != null)
-                        newPids.remove(pid);
-            });
-            oldTerm.setProfessorIds(newPids);
-        }
-        if (term.getName() != null && !term.getName().equals(oldTerm.getName()))
-            oldTerm.setName(term.getName());
-        return termDAO.save(oldTerm);
+        return termDAO.save(term);
     }
 
     public TermPV update(Term term) {
@@ -159,7 +121,7 @@ public class TermService {
         }
         if (term.getProfessorIds() != null) {
             // check difference and take action
-            HashSet<String> originalPids = new HashSet<>(oldTerm.getCommentIds());
+            HashSet<String> originalPids = new HashSet<>(oldTerm.getProfessorIds());
             List<String> newPids = new LinkedList<>();
             term.getProfessorIds().forEach((pid)->{
                 if (!originalPids.contains(pid)) {
@@ -187,6 +149,23 @@ public class TermService {
         if (term.getName() != null && !term.getName().equals(oldTerm.getName()))
             oldTerm.setName(term.getName());
         return convertTermToTermPV(termDAO.save(oldTerm));
+    }
+
+    // cId is always valid
+    public boolean addRawComment(Comment c) {
+        if (c == null)
+            return false;
+        String tId = c.getTermId();
+        if (tId == null)
+            return false;
+        Term t = findRawById(tId);
+        if (t == null)
+            return false;
+        if (!t.getCommentIds().contains(c.getId())) {
+            t.getCommentIds().add(c.getId());
+            return updateRaw(t) != null;
+        } else
+            return true;
     }
 
     public boolean delete(Term term) {

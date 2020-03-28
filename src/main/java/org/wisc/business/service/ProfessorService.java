@@ -69,40 +69,7 @@ public class ProfessorService {
     }
 
     public Professor updateRaw(Professor professor) {
-         Professor oldProfessor = findRawById(professor.getId());
-        if (oldProfessor == null)
-            return null;
-        if (professor.getName() != null && !professor.getName().equals(oldProfessor.getName()))
-            oldProfessor.setName(professor.getName());
-        if (professor.getDescription() != null && !professor.getDescription().equals(oldProfessor.getDescription()))
-            oldProfessor.setDescription(professor.getDescription());
-        if (professor.getTermIds() != null) {
-            HashSet<String> originalTids =
-                    new HashSet<>(oldProfessor.getTermIds());
-            LinkedList<String> newTids = new LinkedList<>();
-            professor.getTermIds().forEach((tid)->{
-                if (originalTids.contains(tid)) {
-                    originalTids.remove(tid);
-                    newTids.add(tid);
-                } else {
-                    // to add
-                    Term t = termService.findRawById(tid);
-                    // back reference
-                    if (t != null)
-                        if (t.getProfessorIds().add(professor.getId())) {
-                            newTids.add(tid);
-                        }
-                }
-            });
-            // to remove
-            originalTids.forEach((tid)->{
-                Term t = termService.findRawById(tid);
-                if (t != null && t.getProfessorIds() != null && t.getProfessorIds().remove(professor.getId()))
-                    newTids.remove(tid);
-            });
-            oldProfessor.setTermIds(newTids);
-        }
-        return professorDAO.save(oldProfessor);
+        return professorDAO.save(professor);
     }
 
     public ProfessorPV update(Professor professor) {

@@ -7,6 +7,7 @@ import org.wisc.business.model.BusinessModel.Comment;
 import org.wisc.business.model.BusinessModel.Course;
 import org.wisc.business.model.BusinessModel.Term;
 import org.wisc.business.model.PVModels.CommentPV;
+import org.wisc.business.model.PVModels.TermPV;
 import org.wisc.business.model.PVModels.UserPV;
 import org.wisc.business.model.UserModel.User;
 
@@ -72,27 +73,22 @@ public class CommentService {
             return null;
         comment.setLastModifiedDate(new Date());
         comment.setLastEditedBy(comment.getAuthorId());
-        Term term = termService.findRawById(comment.getTermId());
-        if (term == null)
+        CommentPV saved = convertCommentToCommentPV(commentDAO.save(comment));
+        if (saved == null)
             return null;
-        CommentPV savedCommentPV =
-                convertCommentToCommentPV(commentDAO.save(comment));
-        List<String> termIds = term.getCommentIds();
-        termIds.add(savedCommentPV.getId());
-        term.setCommentIds(termIds);
-        if (comment.getRating() != null)
-            term.setAverageRating((term.getAverageRating()*(termIds.size()-1)+comment.getRating()) / (termIds.size()*1.0));
-        if (termService.update(term) == null)
+        if (!termService.addRawComment(comment)) {
             return null;
-        return convertCommentToCommentPV(commentDAO.save(comment));
+        }
+        return saved;
     }
 
     public CommentPV update(Comment comment) {
         Comment oldComment = findRawById(comment.getId());
         if (oldComment == null)
             return null;
-        if (comment.getRating() != null && comment.getRating().equals(oldComment.getRating()))
+        if (comment.getRating() != null && !comment.getRating().equals(oldComment.getRating())) {
             oldComment.setRating(comment.getRating());
+        }
         if (comment.getContent() != null && !comment.getContent().equals(oldComment.getContent()))
             oldComment.setContent(comment.getContent());
         if (comment.getLastEditedBy() != null && !comment.getLastEditedBy().equals(oldComment.getLastEditedBy()))
@@ -107,8 +103,10 @@ public class CommentService {
         if (comment.getTermId() != null) {
             Term term = termService.findRawById(comment.getTermId());
             if (term != null) {
-                if (term.getCommentIds().remove(comment.getId()) && comment.getRating() != null)
-                    term.setAverageRating((term.getAverageRating()*term.getCommentIds().size() - comment.getRating())/(term.getCommentIds().size()-1));
+                if (term.getCommentIds().remove(comment.getId()) && comment.getRating() != null) {
+                    term.setAverageRating((term.getAverageRating() * term.getCommentIds().size() - comment.getRating()) / (term.getCommentIds().size() - 1));
+                    termService.updateRaw(term);
+                }
             }
         }
         commentDAO.delete(comment);

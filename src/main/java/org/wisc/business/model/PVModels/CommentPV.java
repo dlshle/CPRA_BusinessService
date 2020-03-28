@@ -33,7 +33,9 @@ public class CommentPV implements Serializable {
     }
 
     public Comment toRawType() {
-        return new Comment(id, term.getId(), content, author.getId(),
-                lastEditedBy.getId(), lastModifiedDate, rating);
+        return new Comment(id, (term==null?null:term.getId()), content,
+                author==null?null:author.getId(), lastEditedBy==null?null:
+                lastEditedBy.getId(),
+                lastModifiedDate, rating);
     }
 }

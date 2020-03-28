@@ -31,7 +31,17 @@ public class TermPV implements Serializable {
             this.course = new NameIdPair(course.getName(), course.getId());
         this.name = term.getName();
         this.description = term.getDescription();
-        this.averageRating = term.getAverageRating();
+        this.averageRating = 0.0;
+        int ratingCount = 0;
+        if (comments != null) {
+            for (CommentPV comment : comments) {
+                if (comment.getRating() != null) {
+                    this.averageRating += comment.getRating();
+                    ratingCount++;
+                }
+            }
+        }
+        this.averageRating /= ratingCount==0?1:(ratingCount * 1.0);
         this.year = term.getYear();
         this.season = term.getSeason();
         List<NameIdPair> pairs = new ArrayList<>(professors.size());
@@ -48,8 +58,7 @@ public class TermPV implements Serializable {
         if (comments != null)
             comments.forEach((c)->cIds.add(c.getId()));
         return new Term(id, course==null?null:course.id, name, description,
-                averageRating,
-                year, season, pIds, cIds);
+                averageRating, year, season, pIds, cIds);
     }
 
 }

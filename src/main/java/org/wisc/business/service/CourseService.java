@@ -71,40 +71,7 @@ public class CourseService {
      * @return
      */
     public Course updateRaw(Course course) {
-         Course oldCourse = findRawById(course.getId());
-        if (oldCourse == null)
-            return null;
-        if (course.getName() != null && !course.getName().equals(oldCourse.getName()))
-            oldCourse.setName(course.getName());
-        if (course.getDescription() != null && !course.getDescription().equals(oldCourse.getDescription()))
-            oldCourse.setDescription(course.getDescription());
-        if (course.getTermsIds() != null) {
-            HashSet<String> originalSet =
-                    new HashSet<>(oldCourse.getTermsIds());
-            LinkedList<String> newTids = new LinkedList<>();
-            course.getTermsIds().forEach((tid)->{
-                if (originalSet.contains(tid)) {
-                    // keep
-                    originalSet.remove(tid);
-                    newTids.add(tid);
-                } else {
-                    // to update
-                    Term t = termService.findRawById(tid);
-                    if (t != null) {
-                        t.setCourseId(course.getId());
-                    }
-                    newTids.add(tid);
-                }
-            });
-            originalSet.forEach((tid)->{
-                // unlink
-                Term t = termService.findRawById(tid);
-                if (t != null) {
-                    t.setCourseId(null);
-                }
-            });
-        }
-        return courseDAO.save(oldCourse);
+        return courseDAO.save(course);
     }
 
     public CoursePV update(Course course) {
