@@ -115,25 +115,25 @@ public class UserService {
         User oldUser = findRawById(user.getId());
         if (oldUser == null)
             return null;
-        // only update password
         if (user.getPassword() != null && user.getPassword().length() >= 12) {
             // set password
             oldUser.setSalt(SecurityUtil.generateSalt(user.getPassword().length()));
             oldUser.setPassword(SecurityUtil.hashPassword(user.getPassword(),
                     oldUser.getSalt()));
-            return convertUserToUserPV(userDAO.save(user));
         }
         // update other stuff
-        if (user.getEmail() != null && user.getEmail().length() > 6) {
+        if (user.getEmail() != null && user.getEmail().length() > 6 && !user.getEmail().equals(oldUser.getEmail())) {
             if (userDAO.findByEmail(user.getEmail()) != null)
                 throw new DuplicateEmailException();
             oldUser.setEmail(user.getEmail());
         }
-        if (user.getUsername() != null && user.getUsername().length() > 6) {
+        if (user.getUsername() != null && user.getUsername().length() > 6 && !user.getUsername().equals(oldUser.getUsername())) {
             if (userDAO.findByUsername(user.getUsername()) != null)
                 throw new DuplicateUserNameException();
             oldUser.setUsername(user.getUsername());
         }
+        if (user.getName() != null && !user.getName().isEmpty())
+            oldUser.setName(user.getName());
         if (user.getFavorite() != null) {
             HashSet<String> oldIds = new HashSet<>(user.getFavorite());
             LinkedList<String> newIds = new LinkedList<>();
@@ -153,7 +153,7 @@ public class UserService {
         }
         User result;
         try {
-            result = userDAO.save(user);
+            result = userDAO.save(oldUser);
         } catch (Exception ex) {
             return null;
         }

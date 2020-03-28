@@ -71,6 +71,8 @@ public class CourseService {
      * @return
      */
     public Course updateRaw(Course course) {
+        if (course == null)
+            return null;
         return courseDAO.save(course);
     }
 

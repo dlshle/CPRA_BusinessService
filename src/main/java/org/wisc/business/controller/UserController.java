@@ -70,6 +70,7 @@ public class UserController {
             return AjaxResponse.error(400, "User("+user.getId()+") is " +
                     "invalid.");
         }
+        newUser.setPasswd("");
         return AjaxResponse.success(newUser);
     }
 

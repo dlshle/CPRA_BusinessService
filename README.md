@@ -42,14 +42,75 @@ user authentication.
  ORM for communicating with the db server. 
 DB Design:
 All ids are string.
-### User Collection
+
+
+## Request and Respond format
+
+### Request format
+For all Post request(need user login except for user):
+#### User
+```
+Request format of user when registering
+{
+    email:"a@b.c",
+    username:"abc",
+    name:"name", // can be null
+    passwd:"passwd",
+}
+Request format of user when updating can follow the user response format.
+```
+
+#### Course
+```
+{
+    name:"name",
+    description:"desc",
+    termsIds:["1","2","3"] // or empty
+}
+Request format of course when updating can follow the user response format.
+```
+
+#### Term
+```
+{
+    name:"name", // can follow course
+    description:"desc", // can follow course
+    year: 2019,
+    season: "FALL", //"FALL", "SPRING", or "SUMMER"
+    professorIds: ["1", "2"]
+}  
+Request format of term when updating can follow the user response format.
+```
+
+#### Comment
+```
+{
+    termId: "1",
+    rating: 5.0
+}
+Request format of comment when updating can follow the user response format.
+```
+
+#### Professor
+```
+{
+    name: "name",
+    description: "maybe something bad about this professor"
+}
+
+Request format of professor when updating can follow the user response format.
+```
+
+All Put and Delete request should follow the general respond format.
+
+### General respond format
+#### User
 ```
 {
 	id: "1", 
 	username: "String", 
 	email: "String", 
 	password: "String",  //passwd on the front-end
-	salt: "String",
 	favorites: [
 	    {
             name: "name",
@@ -64,7 +125,7 @@ All ids are string.
 }
 // terms is a list of term name, id pair
 ```
-### Course Collection
+#### Course 
 ```
 {
 	id: "1",
@@ -79,7 +140,7 @@ All ids are string.
 }
 // terms is a list of term ids
 ```
-### Term Collection
+#### Term 
 ```
 {
 	id: "1",
@@ -109,7 +170,7 @@ All ids are string.
 // rating is the average rating from comments
 // comments is a list of comment name, id pair
 ```
-### Comment Collection
+#### Comment 
 ```
 {
 	id: "1",
@@ -120,7 +181,7 @@ All ids are string.
 }
 // author and lastEditedBy are the name, id pair of the author of this comment
 ```
-### Professor Collection
+#### Professor 
 ```
 {
 	id: "1",

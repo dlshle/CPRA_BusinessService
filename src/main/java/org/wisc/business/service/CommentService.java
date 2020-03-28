@@ -4,10 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.wisc.business.dao.CommentDAO;
 import org.wisc.business.model.BusinessModel.Comment;
-import org.wisc.business.model.BusinessModel.Course;
 import org.wisc.business.model.BusinessModel.Term;
 import org.wisc.business.model.PVModels.CommentPV;
-import org.wisc.business.model.PVModels.TermPV;
 import org.wisc.business.model.PVModels.UserPV;
 import org.wisc.business.model.UserModel.User;
 
