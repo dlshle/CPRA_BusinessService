@@ -29,7 +29,7 @@ public class CourseController {
     TermService termService;
 
     @PostMapping("")
-    public @ResponseBody AjaxResponse addCoursePV(@RequestHeader("token") String token
+    public @ResponseBody AjaxResponse addCourse(@RequestHeader("token") String token
             ,@RequestBody Course course) {
         if (!authenticationService.isValidToken(token))
             return AjaxResponse.notLoggedIn();
@@ -89,7 +89,7 @@ public class CourseController {
 
     @GetMapping("/name/{name}")
     public @ResponseBody AjaxResponse getCoursePVByName(@PathVariable String name) {
-        return AjaxResponse.success(courseService.findByName(name));
+        return AjaxResponse.success(courseService.findAllByName(name));
     }
 
     @DeleteMapping("")

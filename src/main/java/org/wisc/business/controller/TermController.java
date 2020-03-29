@@ -97,19 +97,6 @@ public class TermController {
         return AjaxResponse.success(termService.findByAverageRating(rating));
     }
 
-    @GetMapping("/courseName/{courseName}")
-    public @ResponseBody AjaxResponse findByCourseName(@PathVariable String courseName) {
-        CoursePV queriedCourse = courseService.findByName(courseName);
-        if (queriedCourse == null)
-            return AjaxResponse.success(new LinkedList<Term>());
-        return AjaxResponse.success(termService.findByCourseId(queriedCourse.getId()));
-    }
-
-    @GetMapping("/courseId/{courseId}")
-    public @ResponseBody AjaxResponse findByCourseId(@PathVariable String courseId) {
-        return AjaxResponse.success(termService.findByCourseId(courseId));
-    }
-
     /**
      * query terms by params
      * @param year year taught

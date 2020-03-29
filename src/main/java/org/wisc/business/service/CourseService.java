@@ -51,7 +51,13 @@ public class CourseService {
     }
 
     public CoursePV findByName(String name) {
+        if (name == null)
+            return null;
         return convertCourseToCoursePV(courseDAO.findByName(name));
+    }
+
+    public List<CoursePV> findAllByName(String name) {
+        return convertCoursesToCoursePVs(courseDAO.findAllByNameLike(name));
     }
 
     public List<CoursePV> all() {
