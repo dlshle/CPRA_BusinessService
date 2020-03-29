@@ -79,6 +79,13 @@ public class TermController {
         return AjaxResponse.success(term);
     }
 
+    @GetMapping("/courseId/{courseId}")
+    public @ResponseBody AjaxResponse getTermsByCourseId(@PathVariable String courseId) {
+        if (courseId == null || courseId.isEmpty())
+            return AjaxResponse.error(400, "Invalid course Id");
+         return AjaxResponse.success(termService.findByCourseId(courseId));
+    }
+
     @GetMapping("/season/{season}")
     public @ResponseBody AjaxResponse findBySeason(@PathVariable String season) {
         Season s = Season.generateSeason(season);
