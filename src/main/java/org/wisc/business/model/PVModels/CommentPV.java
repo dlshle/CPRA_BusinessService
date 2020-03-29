@@ -24,7 +24,8 @@ public class CommentPV implements Serializable {
     public CommentPV(Comment comment, Term term, UserPV author,
                      UserPV lastEditedBy) {
         this.id = comment.getId();
-        this.term = new NameIdPair(term.getName(), term.getId());
+        if (term != null)
+            this.term = new NameIdPair(term.getName(), term.getId());
         this.content = comment.getContent();
         this.author = author;
         this.lastEditedBy = lastEditedBy;

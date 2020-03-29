@@ -34,8 +34,11 @@ public class CommentService {
         if (c.getLastEditedBy() != null)
             lastEditor = userService.findById(c.getLastEditedBy());
         Term term = null;
-        if (c.getTermId() != null)
-            term = termService.findRawById(c.getTermId());
+        if (c.getTermId() == null)
+            return null;
+        term = termService.findRawById(c.getTermId());
+        if (term == null)
+            return null;
         return new CommentPV(c, term, author, lastEditor);
     }
 

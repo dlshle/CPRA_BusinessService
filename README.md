@@ -161,8 +161,12 @@ All Put and Delete request should follow the general respond format.
 	averageRating: 1.5,
 	comments: [
 	    {
-	        name: "c1",
 	        id: "1"
+	        content: "c1",
+	        author: "123",
+	        lastEditedBy: "456",
+	        rating: 1.0,
+	        lastModifiedDate: Date
 	    }
 	]
 }
@@ -177,6 +181,7 @@ All Put and Delete request should follow the general respond format.
 	content: "String",
 	author: {name: "author", id: "1"},
 	lastEditedBy: {name: "new_author", id: "2"},
+	rating: 1.0,
 	lastModifiedDate: Date
 }
 // author and lastEditedBy are the name, id pair of the author of this comment
