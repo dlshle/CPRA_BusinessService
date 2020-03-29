@@ -319,11 +319,10 @@ from request header.
 
 Tokens will be renewed every 30 minutes. Implementation details are unspecified.
 
-## Integration with Comment Filtering Service
+## Integration with Comment Filtering Service(On pause)
 Considering using different ports for different services. Once a comment is 
 received, pass it to the Comment Filtering Service. Once a decision is made, 
 CFS saves the comment in MongoDB.
-∵傻逼阿三滚犊子了，这个得再考虑
 
 ## Future discussion
 Whether a distributed database is needed to cache the current login user tokens?
