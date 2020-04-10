@@ -43,7 +43,7 @@ public class SecurityUtil {
             result[i] = hashChar(x.charAt(i), y.charAt(i));
         }
         for (;i<x.length();i++) {
-            result[i] = hashChar(x.charAt(i), y.charAt(i-y.length()));
+            result[i] = hashChar(x.charAt(i), y.charAt(i%y.length()));
         }
         return result;
     }

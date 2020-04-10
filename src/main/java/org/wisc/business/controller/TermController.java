@@ -15,7 +15,6 @@ import org.wisc.business.service.*;
 
 import javax.annotation.Resource;
 import javax.websocket.server.PathParam;
-import java.util.LinkedList;
 
 @Slf4j
 @RestController
@@ -102,6 +101,11 @@ public class TermController {
     @GetMapping("/rating/{rating}")
     public @ResponseBody AjaxResponse findByRating(@PathVariable Double rating) {
         return AjaxResponse.success(termService.findByAverageRating(rating));
+    }
+
+    @GetMapping("/name/{name}")
+    public @ResponseBody AjaxResponse findByNameLike(@PathVariable String name) {
+        return AjaxResponse.success(termService.findAllByName(name));
     }
 
     /**

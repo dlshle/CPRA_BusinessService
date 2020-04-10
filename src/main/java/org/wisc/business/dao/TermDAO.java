@@ -13,4 +13,5 @@ public interface TermDAO extends MongoRepository<Term, String> {
     List<Term> findAllBySeason(Season season);
     List<Term> findAllByYear(Integer year);
     List<Term> findAllByCourseId(String courseId);
+    List<Term> findAllByNameLike(String name);
 }

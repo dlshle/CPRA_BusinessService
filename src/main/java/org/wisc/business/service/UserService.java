@@ -176,7 +176,7 @@ public class UserService {
         tIds.add(termId);
         user.setFavorite(tIds);
         try {
-            return update(user);
+            return convertUserToUserPV(userDAO.save(user));
         } catch (Exception e) {
             return null;
         }
@@ -191,7 +191,7 @@ public class UserService {
         tIds.remove(termId);
         user.setFavorite(tIds);
         try {
-            return update(user);
+            return convertUserToUserPV(userDAO.save(user));
         } catch (Exception e) {
             return null;
         }

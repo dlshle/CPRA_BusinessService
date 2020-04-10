@@ -40,6 +40,10 @@ public class TermService {
         return new TermPV(term, course, professors, comments);
     }
 
+    public List<TermPV> findAllByName(String name) {
+        return convertTermsToTermPVs(termDAO.findAllByNameLike(name));
+    }
+
     public List<TermPV> convertTermsToTermPVs(List<Term> terms) {
         List<TermPV> results = new LinkedList<>();
         for (Term term:terms) {

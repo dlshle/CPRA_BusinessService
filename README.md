@@ -179,12 +179,12 @@ All Put and Delete request should follow the general respond format.
 {
 	id: "1",
 	content: "String",
-	author: {name: "author", id: "1"},
-	lastEditedBy: {name: "new_author", id: "2"},
+	author: {email: "email", username: "author", id: "1", ...},
+	lastEditedBy: {email: "email", username: "new_author", id: "2", ...},
 	rating: 1.0,
 	lastModifiedDate: Date
 }
-// author and lastEditedBy are the name, id pair of the author of this comment
+// author and lastEditedBy are the complete user type object of this comment
 ```
 #### Professor 
 ```
@@ -271,6 +271,7 @@ Term endpoints:
 ={int_year_to}&season={str_season}&courseName={str_course_name}&averageRating
 ={double_average_rating}&ratingFrom={double_rating_from}&ratingTo
 ={double_rating_to}
+- Query Term By Name: GET /v1/terms/name{name}
 
 Professor endpoints:
 - *Upload Professor*: POST /v1/professors/
