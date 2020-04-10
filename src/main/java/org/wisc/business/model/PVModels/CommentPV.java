@@ -3,6 +3,7 @@ package org.wisc.business.model.PVModels;
 import lombok.*;
 import org.wisc.business.model.BusinessModel.Comment;
 import org.wisc.business.model.BusinessModel.Term;
+import org.wisc.business.model.UserModel.User;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -16,13 +17,13 @@ public class CommentPV implements Serializable {
     private String id;
     private NameIdPair term;
     private String content;
-    private UserPV author;
-    private UserPV lastEditedBy;
+    private User author;
+    private User lastEditedBy;
     private Date lastModifiedDate;
     private Double rating;
 
-    public CommentPV(Comment comment, Term term, UserPV author,
-                     UserPV lastEditedBy) {
+    public CommentPV(Comment comment, Term term, User author,
+                     User lastEditedBy) {
         this.id = comment.getId();
         if (term != null)
             this.term = new NameIdPair(term.getName(), term.getId());

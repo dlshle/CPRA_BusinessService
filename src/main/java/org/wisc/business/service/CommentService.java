@@ -29,10 +29,10 @@ public class CommentService {
     public CommentPV convertCommentToCommentPV(Comment c) {
         if (c == null)
             return null;
-        UserPV author = userService.findById(c.getAuthorId());
-        UserPV lastEditor = null;
+        User author = userService.findRawById(c.getAuthorId());
+        User lastEditor = null;
         if (c.getLastEditedBy() != null)
-            lastEditor = userService.findById(c.getLastEditedBy());
+            lastEditor = userService.findRawById(c.getLastEditedBy());
         Term term = null;
         if (c.getTermId() == null)
             return null;
