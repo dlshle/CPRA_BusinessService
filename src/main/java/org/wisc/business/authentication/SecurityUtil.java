@@ -6,13 +6,13 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.wisc.business.model.UserModel.User;
 
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 
 public class SecurityUtil {
+    @Deprecated
     public static final long EXPIRATION_PERIOD = 1800000l;
 
     public static String hashPassword(String password, String salt) {
@@ -53,7 +53,6 @@ public class SecurityUtil {
     }
 
     public static String generateSalt(int n) {
-
         // chose a Character random from this String
         String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
                 + "abcdefghijklmnopqrstuvxyz";

@@ -7,6 +7,7 @@ from pymongo import *
 
 address = 'localhost'
 port = 2020
+duplicate_field = 'name'
 
 client = MongoClient(address, port)
 
@@ -19,11 +20,11 @@ collection_patent = db_data.Term
 patents = {}
 count = 0
 for patent_record in collection_patent.find({'_id':{'$ne':0}}):
-  if patent_record['name'] not in patents.keys():
-    patents[patent_record['name']] = patent_record
-    print('name: ' + patent_record['name'] + 'found!')
+  if patent_record[duplicate_field] not in patents.keys():
+    patents[patent_record[duplicate_field]] = patent_record
+    print('name: ' + patent_record[duplicate_field] + 'found!')
   else:
-    print('duplicate name:' + patent_record['name'])
+    print('duplicate name:' + patent_record[duplicate_field])
     count += 1
-    collection_patent.delete_one({'name':patent_record['name']});
+    collection_patent.delete_one({duplicate_field:patent_record[duplicate_field]});
 print(count)

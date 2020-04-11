@@ -3,6 +3,7 @@ package org.wisc.business.cache;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class LFUCache<K, V> implements Cache<K, V> {
 
     private Map<K, Node> map;

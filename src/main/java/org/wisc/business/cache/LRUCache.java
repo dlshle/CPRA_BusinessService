@@ -3,6 +3,7 @@ package org.wisc.business.cache;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Deprecated
 public class LRUCache<K, V> implements Cache<K, V>{
     private class CacheNode {
         CacheNode pre;
