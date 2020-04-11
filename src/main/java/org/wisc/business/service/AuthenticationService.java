@@ -21,9 +21,6 @@ public class AuthenticationService {
             // login with email
             userFromDatabase =
                     userService.findRawByEmail(user.getEmail());
-        } else if (user.getUsername() != null && !user.getUsername().isEmpty()) {
-            userFromDatabase =
-                    userService.findRawByUsername(user.getUsername());
         }
         if (userFromDatabase == null)
             return null;
@@ -48,13 +45,4 @@ public class AuthenticationService {
                 user.getPassword())?user:null;
     }
 
-    @Deprecated
-    public boolean isLoggedIn(HttpServletRequest request) {
-        if (request == null)
-            return false;
-        String token  =request.getHeader("token");
-        if (token == null)
-            return false;
-        return isValidToken(token);
-    }
 }

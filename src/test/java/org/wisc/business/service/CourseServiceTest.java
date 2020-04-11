@@ -1,18 +1,11 @@
 package org.wisc.business.service;
 
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 class CourseServiceTest {
-
-    @Test
-    void convertCourseToCoursePV() {
-    }
-
-    @Test
-    void convertCoursesToCoursePVs() {
-    }
+    @Autowired
+    CourseService courseService;
 
     @Test
     void findRawById() {

@@ -1,21 +1,16 @@
 package org.wisc.business.service;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class TermServiceTest {
-
-    @Test
-    void convertTermToTermPV() {
-    }
+    @Autowired
+    TermService termService;
 
     @Test
     void findAllByName() {
-    }
-
-    @Test
-    void convertTermsToTermPVs() {
     }
 
     @Test

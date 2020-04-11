@@ -1,18 +1,13 @@
 package org.wisc.business.service;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserServiceTest {
-
-    @Test
-    void convertUserToUserPV() {
-    }
-
-    @Test
-    void convertUsersToUserPVs() {
-    }
+    @Autowired
+    UserService userService;
 
     @Test
     void findByParam() {

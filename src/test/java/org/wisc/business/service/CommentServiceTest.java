@@ -1,18 +1,13 @@
 package org.wisc.business.service;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class CommentServiceTest {
-
-    @Test
-    void convertCommentToCommentPV() {
-    }
-
-    @Test
-    void convertCommentsToCommentPVs() {
-    }
+    @Autowired
+    CommentService commentService;
 
     @Test
     void findRawById() {
@@ -20,10 +15,6 @@ class CommentServiceTest {
 
     @Test
     void findById() {
-    }
-
-    @Test
-    void findByAuthor() {
     }
 
     @Test
