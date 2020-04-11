@@ -92,9 +92,12 @@ public class SecurityUtil {
     }
 
     public static String getUserIdFromToken(String token) {
-        Object o = JWT.decode(token);
-        List<String> audience = JWT.decode(token).getAudience();
-        return JWT.decode(token).getAudience().get(0);
+        try {
+            String r = JWT.decode(token).getAudience().get(0);
+            return r;
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     public static boolean verifyTokenWithPassword(String token,
@@ -102,7 +105,7 @@ public class SecurityUtil {
         JWTVerifier verifier =  JWT.require(Algorithm.HMAC256(password)).build();
         try {
             verifier.verify(token);
-        } catch (JWTVerificationException e) {
+        } catch (Exception ex) {
             return false;
         }
         return true;

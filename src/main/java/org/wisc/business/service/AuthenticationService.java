@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.wisc.business.authentication.SecurityUtil;
 import org.wisc.business.model.UserModel.User;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedList;
 
 @Service
