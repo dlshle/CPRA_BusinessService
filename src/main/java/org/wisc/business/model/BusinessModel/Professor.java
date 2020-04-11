@@ -25,4 +25,14 @@ public class Professor implements Serializable {
     private String description;
     @Field("terms")
     private List<String> termIds;
+
+    @Override
+    public boolean equals(Object o) {
+        try {
+            Professor p = (Professor) o;
+            return p.getId().equals(id);
+        } catch (Exception ex) {
+            return false;
+        }
+    }
 }

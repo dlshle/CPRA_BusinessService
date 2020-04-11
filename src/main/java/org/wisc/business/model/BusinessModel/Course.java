@@ -25,4 +25,14 @@ public class Course implements Serializable {
     private String description;
     @Field("terms")
     private List<String> termsIds;
+
+    @Override
+    public boolean equals(Object o) {
+        try {
+            Course c = (Course) o;
+            return c.getId().equals(id);
+        } catch (Exception ex) {
+            return false;
+        }
+    }
 }

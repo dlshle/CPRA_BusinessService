@@ -30,4 +30,14 @@ public class Comment implements Serializable {
     private String lastEditedBy;
     private Date lastModifiedDate;
     private Double rating;
+
+    @Override
+    public boolean equals(Object o) {
+        try {
+            Comment c = (Comment)o;
+            return id.equals(c.getId());
+        } catch (Exception ex) {
+            return false;
+        }
+    }
 }

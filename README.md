@@ -12,16 +12,7 @@ Test user:
 Add user status token from /v1/auth to RequestHeader to enable all services.
 
 ## TODO:
-- Add back reference(e.g. new term->use professorIds to back reference 
-professors in professor.termIds)
-- Add nullity test to all findBy methods.
-- Integrating in memory LRUCache with DAO services.
-- Make user auth services. *
-- Make LFUCache for caching user status.
-- Make tests for db services.
-- Make tests for LRUCache.
-- Make tests for API endpoints.
-- Finish term professorName query
+- Unit tests for Course, Term, User, and Professor services
 - Integration test.
 
 ## Design(Deprecated)

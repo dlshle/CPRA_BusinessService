@@ -43,4 +43,14 @@ public class User implements Serializable {
     @JsonIgnore
     private String salt;
     private boolean isAdmin = false;
+
+    @Override
+    public boolean equals(Object o) {
+        try {
+            User u = (User)o;
+            return u.getId().equals(id);
+        } catch (Exception ex) {
+            return false;
+        }
+    }
 }

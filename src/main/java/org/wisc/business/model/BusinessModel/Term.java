@@ -29,4 +29,14 @@ public class Term implements Serializable {
     private List<String> professorIds;
     @Field("comments")
     private List<String> commentIds;
+
+    @Override
+    public boolean equals(Object o) {
+        try {
+            Term t = (Term) o;
+            return t.getId().equals(id);
+        } catch (Exception ex) {
+            return false;
+        }
+    }
 }
