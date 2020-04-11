@@ -35,7 +35,7 @@ public class TermPV implements Serializable {
         int ratingCount = 0;
         if (comments != null) {
             for (CommentPV comment : comments) {
-                if (comment.getRating() != null) {
+                if (comment != null && comment.getRating() != null) {
                     this.averageRating += comment.getRating();
                     ratingCount++;
                 }

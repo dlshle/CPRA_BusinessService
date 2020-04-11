@@ -33,7 +33,10 @@ public class ProfessorPV implements Serializable {
     public Professor toRawType() {
         List<String> tIds = new LinkedList<>();
         if (terms != null)
-            terms.forEach((t)->tIds.add(t.id));
+            terms.forEach((t)->{
+                if (t != null && t.id != null)
+                    tIds.add(t.id);
+            });
         return new Professor(id, name, description, tIds);
     }
 }

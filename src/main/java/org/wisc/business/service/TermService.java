@@ -31,8 +31,13 @@ public class TermService {
         if (term == null)
             return null;
         List<CommentPV> comments = new LinkedList<>();
-        if (term.getCommentIds() != null)
-            term.getCommentIds().forEach((cId)->comments.add(commentService.findById(cId)));
+        if (term.getCommentIds() != null) {
+            term.getCommentIds().forEach((cId) -> {
+                CommentPV cpv = commentService.findById(cId);
+                if (cpv != null)
+                    comments.add(commentService.findById(cId));
+            });
+        }
         Course course = courseService.findRawById(term.getCourseId());
         List<Professor> professors = new LinkedList<>();
         if (term.getProfessorIds() != null)
@@ -41,6 +46,8 @@ public class TermService {
     }
 
     public List<TermPV> findAllByName(String name) {
+        if (name == null)
+            return new LinkedList<>();
         return convertTermsToTermPVs(termDAO.findAllByNameLike(name));
     }
 

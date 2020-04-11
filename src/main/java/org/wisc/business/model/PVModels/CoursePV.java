@@ -32,7 +32,10 @@ public class CoursePV implements Serializable {
     public Course toRawType() {
         List<String> tIds = new LinkedList<>();
         if (terms != null)
-            terms.forEach((t)->tIds.add(t.id));
+            terms.forEach((t)->{
+                if (t != null && t.id != null)
+                    tIds.add(t.id);
+            });
         return new Course(id, name, description, tIds);
     }
 }

@@ -38,7 +38,10 @@ public class UserPV implements Serializable {
     public User toRawType() {
         List<String> tIds = new ArrayList<>(favorite==null?0:favorite.size());
         if (favorite != null)
-            favorite.forEach((f)->tIds.add(f.getId()));
+            favorite.forEach((f)->{
+                if (f != null && f.getId() != null)
+                    tIds.add(f.getId());
+            });
         return User.builder().id(id).email(email).username(username).name(name).favorite(tIds).createdDate(createdDate).password(passwd).isAdmin(isAdmin).build();
     }
 }
