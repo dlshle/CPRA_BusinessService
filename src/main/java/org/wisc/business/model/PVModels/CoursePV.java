@@ -25,7 +25,10 @@ public class CoursePV implements Serializable {
         this.name = course.getName();
         this.description = course.getDescription();
         List<NameIdPair> termPair = new ArrayList<>(terms.size());
-        terms.forEach((t)->termPair.add(new NameIdPair(t.getName(), t.getId())));
+        terms.forEach((t)->{
+            if (t != null)
+                termPair.add(new NameIdPair(t.getName(), t.getId()));
+        });
         this.terms = termPair;
     }
 

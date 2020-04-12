@@ -51,10 +51,14 @@ public class ProfessorService {
     }
 
     public List<ProfessorPV> findByName(String name) {
+        if (name == null)
+            return new LinkedList<>();
         return convertProfessorsToProfessorPVs(professorDAO.findAllByNameLike(name));
     }
 
     public ProfessorPV findFirstOccuranceByName(String name) {
+        if (name == null)
+            return null;
         return convertProfessorToProfessorPV(professorDAO.findByName(name));
     }
 
@@ -63,6 +67,8 @@ public class ProfessorService {
     }
 
     public ProfessorPV add(Professor professor) {
+        if (professor == null || professor.getName() == null)
+            return null;
         if (professor.getTermIds() == null)
             professor.setTermIds(new LinkedList<>());
         return convertProfessorToProfessorPV(professorDAO.save(professor));
@@ -110,7 +116,7 @@ public class ProfessorService {
     }
 
     public boolean delete(Professor professor) {
-        if (findById(professor.getId()) == null)
+        if (professor == null || findById(professor.getId()) == null)
             return false;
         // update terms
         if (professor.getTermIds() != null) {

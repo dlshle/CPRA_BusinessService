@@ -73,18 +73,26 @@ public class TermService {
     }
 
     public List<TermPV> findBySeason(Season season) {
+        if (season == null)
+            return new LinkedList<>();
         return convertTermsToTermPVs(termDAO.findAllBySeason(season));
     }
 
     public List<TermPV> findByYear(Integer year) {
+        if (year <= 1900)
+            return new LinkedList<>();
         return convertTermsToTermPVs(termDAO.findAllByYear(year));
     }
 
     public List<TermPV> findByAverageRating(Double rating) {
+        if (rating == null || rating < 0 || rating > 5)
+            return new LinkedList<>();
         return convertTermsToTermPVs(termDAO.findAllByAverageRating(rating));
     }
 
     public List<TermPV> findByCourseId(String courseId) {
+        if (courseId == null)
+            return new LinkedList<>();
         return convertTermsToTermPVs(termDAO.findAllByCourseId(courseId));
     }
 
@@ -93,6 +101,8 @@ public class TermService {
     }
 
     public TermPV add(Term term) {
+        if (term == null || term.getName() == null)
+            return null;
         if (term.getProfessorIds() == null)
             term.setProfessorIds(new LinkedList<>());
         if (term.getCourseId() == null)
@@ -180,7 +190,7 @@ public class TermService {
     }
 
     public boolean delete(Term term) {
-        if (findById(term.getId()) == null)
+        if (term == null || findRawById(term.getId()) == null)
             return false;
         if (term.getCourseId() != null) {
             Course c = courseService.findRawById(term.getCourseId());

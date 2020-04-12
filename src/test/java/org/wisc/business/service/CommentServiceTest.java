@@ -26,6 +26,7 @@ class CommentServiceTest {
         final String invalIdMessage = "Test with invalid id";
         assertNotNull(commentService.findRawById(validId), validIdMessage);
         assertNull(commentService.findRawById(invalidId), invalIdMessage);
+        assertNotNull(commentService.findRawById(null));
     }
 
     @Test
@@ -42,6 +43,7 @@ class CommentServiceTest {
 
         final CommentPV invalidIdResult = commentService.findById(invalidId);
         assertNull(invalidIdResult, invalIdMessage);
+        assertNull(commentService.findById(null));
     }
 
     @Test
@@ -58,7 +60,7 @@ class CommentServiceTest {
         final String validCommentMessage = "Test with valid comment";
         final Comment inValidComment = new Comment();
         final String inValidCommentMessage = "Test with invalid comment";
-        CommentPV rValid = commentService.add(validComment);
+        final CommentPV rValid = commentService.add(validComment);
         assertNotNull(rValid, validCommentMessage);
         assertEquals(rValid.toRawType(), validComment);
 
@@ -66,6 +68,7 @@ class CommentServiceTest {
         assertTrue(commentService.delete(rValid.toRawType()));
 
         assertNull(commentService.add(inValidComment), inValidCommentMessage);
+        assertNull(commentService.add(null));
     }
 
     @Test
@@ -83,7 +86,8 @@ class CommentServiceTest {
             newRating = (Math.random() * 5.0);
         }
         validComment.setRating(newRating);
-        CommentPV updatedComment = commentService.update(validComment.toRawType());
+        final CommentPV updatedComment =
+                commentService.update(validComment.toRawType());
 
         assertNotNull(updatedComment, "Test updated comment");
         assertEquals(validComment.getId(), updatedComment.getId());
@@ -95,6 +99,7 @@ class CommentServiceTest {
                 commentService.update(validComment.toRawType());
         assertNotNull(revertedCommentPV);
         assertNotEquals(revertedCommentPV.getRating(), updatedComment.getRating());
+        assertNull(commentService.update(null));
     }
 
     @Test
@@ -107,5 +112,6 @@ class CommentServiceTest {
         assertTrue(commentService.delete(newCommentPV.toRawType()));
         assertFalse(commentService.delete(newCommentPV.toRawType()));
         assertFalse(commentService.deleteRaw(invalidComment));
+        assertFalse(commentService.delete(null));
     }
 }

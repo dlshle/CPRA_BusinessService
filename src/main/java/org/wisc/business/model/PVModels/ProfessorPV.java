@@ -25,8 +25,10 @@ public class ProfessorPV implements Serializable {
         this.name = professor.getName();
         this.description = professor.getDescription();
         List<NameIdPair> termPair = new ArrayList<>(terms.size());
-        terms.forEach((t)->termPair.add(new NameIdPair(t.getName(),
-                t.getId())));
+        terms.forEach((t)-> {
+            if (t != null)
+                termPair.add(new NameIdPair(t.getName(), t.getId()));
+        });
         this.terms = termPair;
     }
 

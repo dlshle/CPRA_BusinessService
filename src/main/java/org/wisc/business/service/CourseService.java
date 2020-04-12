@@ -24,6 +24,8 @@ public class CourseService {
     TermService termService;
 
     public CoursePV convertCourseToCoursePV(Course course) {
+        if (course == null)
+            return null;
         List<Term> terms = new LinkedList<>();
         if (course.getTermsIds() != null) {
             course.getTermsIds().forEach((tId)->terms.add(termService.findRawById(tId)));
@@ -57,6 +59,8 @@ public class CourseService {
     }
 
     public List<CoursePV> findAllByName(String name) {
+        if (name == null)
+            return new LinkedList<>();
         return convertCoursesToCoursePVs(courseDAO.findAllByNameLike(name));
     }
 
@@ -65,6 +69,8 @@ public class CourseService {
     }
 
     public CoursePV add(Course course) {
+        if (course == null || course.getName() == null)
+            return null;
         if (course.getTermsIds() == null)
             course.setTermsIds(new LinkedList<>());
         return convertCourseToCoursePV(courseDAO.save(course));
@@ -77,12 +83,14 @@ public class CourseService {
      * @return
      */
     public Course updateRaw(Course course) {
-        if (course == null)
+        if (course == null || course.getId() == null)
             return null;
         return courseDAO.save(course);
     }
 
     public CoursePV update(Course course) {
+        if (course == null)
+            return null;
         Course oldCourse = findRawById(course.getId());
         if (oldCourse == null)
             return null;
@@ -123,7 +131,7 @@ public class CourseService {
     }
 
     public boolean delete(Course course) {
-        if (findById(course.getId()) == null)
+        if (course == null || findById(course.getId()) == null)
             return false;
         List<TermPV> termPVS = termService.findByCourseId(course.getId());
         termPVS.forEach((tPV)->{

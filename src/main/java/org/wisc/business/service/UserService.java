@@ -37,16 +37,6 @@ public class UserService {
         return results;
     }
 
-    public UserPV findByParam(User paramUser) {
-        if (paramUser.getId() != null)
-            return findById(paramUser.getId());
-        if (paramUser.getEmail() != null && !paramUser.getEmail().equals(""))
-            return findByEmail(paramUser.getEmail());
-        if (paramUser.getUsername() != null && !paramUser.getUsername().equals(""))
-            return findByUsername(paramUser.getUsername());
-        return null;
-    }
-
     public User findRawById(String id) {
         if (id == null)
             return null;
@@ -67,18 +57,20 @@ public class UserService {
     }
 
     public UserPV findByEmail(String email) {
+        if (email == null)
+            return null;
         return convertUserToUserPV(userDAO.findByEmail(email));
     }
 
-    public User findRawByUsername(String username) {
-        return userDAO.findByUsername(username);
-    }
-
     public UserPV findByUsername(String username) {
+        if (username == null)
+            return null;
         return convertUserToUserPV(userDAO.findByUsername(username));
     }
 
     public List<UserPV> findByName(String name) {
+        if (name == null)
+            return new LinkedList<>();
         List<User> users = userDAO.findAllByNameLike(name);
         return convertUsersToUserPVs(users);
     }
@@ -89,6 +81,8 @@ public class UserService {
 
     public UserPV add(User user) throws DuplicateEmailException,
             DuplicateUserNameException{
+        if (user == null || user.getEmail() == null || user.getPassword() == null)
+            return null;
         if (userDAO.findByUsername(user.getUsername()) != null)
             throw new DuplicateUserNameException();
         if (userDAO.findByEmail(user.getEmail()) != null)
@@ -111,6 +105,8 @@ public class UserService {
 
     public UserPV update(User user) throws DuplicateEmailException,
             DuplicateUserNameException{
+        if (user == null || user.getId() == null)
+            return null;
         // use id to identify user
         User oldUser = findRawById(user.getId());
         if (oldUser == null)
@@ -161,14 +157,14 @@ public class UserService {
     }
 
     public boolean delete(User user) {
-        if (findById(user.getId()) == null)
+        if (user == null || findById(user.getId()) == null)
             return false;
         userDAO.delete(user);
         return true;
     }
 
     public UserPV favorite(User user, String termId) {
-        if (user == null || termId == null)
+        if (user == null || user.getId() == null || termId == null)
             return null;
         if (user.getFavorite().contains(termId))
             return null;
@@ -183,7 +179,7 @@ public class UserService {
     }
 
     public UserPV unfavorite(User user, String termId) {
-        if (user == null || termId == null)
+        if (user == null || user.getId() == null || termId == null)
             return null;
         if (!user.getFavorite().contains(termId))
             return null;

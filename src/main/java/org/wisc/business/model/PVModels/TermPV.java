@@ -51,12 +51,21 @@ public class TermPV implements Serializable {
     }
 
     public Term toRawType() {
-        List<String> pIds = new ArrayList<>(professors.size());
-        List<String> cIds = new ArrayList<>(comments.size());
-        if (professors != null)
-            professors.forEach((p)->pIds.add(p.id));
-        if (comments != null)
-            comments.forEach((c)->cIds.add(c.getId()));
+        List<String> pIds =
+                new ArrayList<>(professors == null?0:professors.size());
+        List<String> cIds = new ArrayList<>(comments == null?0:comments.size());
+        if (professors != null) {
+            professors.forEach((p) -> {
+                if (p != null)
+                    pIds.add(p.id);
+            });
+        }
+        if (comments != null) {
+            comments.forEach((c) -> {
+                if (c != null)
+                    cIds.add(c.getId());
+            });
+        }
         return new Term(id, course==null?null:course.id, name, description,
                 averageRating, year, season, pIds, cIds);
     }
