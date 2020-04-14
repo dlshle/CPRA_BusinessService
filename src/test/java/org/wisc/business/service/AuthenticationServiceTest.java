@@ -29,8 +29,9 @@ class AuthenticationServiceTest {
 
     @Test
     void isValidToken() {
-        final String validToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9" +
-                ".eyJhdWQiOiI1ZThmZWYwYzk2NjM1YTY1ZGVhYTRlYjgiLCJpYXQiOjE1ODY1NzYxNTZ9.5VXIoy2IpcwP5r8ig6UxcsYKcJGRCZ1_3bGAufLHayU";
+        final String validToken =
+                authenticationService.login(User.builder().email("badger@wisc" +
+                        ".edu").password("123456").build());
         final String validTokenMessage = "Test with a valid user Token";
         final String inValidToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9" +
                 ".eyJhdWQiOiI1ZThmZWYwYzk2NjM1YTY1ggVhYTRlYjgiLCJpYXQiOjE1ODY1NzYxNTZ9.5VXIoy2IpcwP5r8ig6UxcsYKcJGRCZ1_3bGAufLHayU";

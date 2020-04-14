@@ -26,7 +26,7 @@ class CommentServiceTest {
         final String invalIdMessage = "Test with invalid id";
         assertNotNull(commentService.findRawById(validId), validIdMessage);
         assertNull(commentService.findRawById(invalidId), invalIdMessage);
-        assertNotNull(commentService.findRawById(null));
+        assertNull(commentService.findRawById(null));
     }
 
     @Test

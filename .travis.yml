@@ -9,5 +9,7 @@ addons:
 before_install:
   - chmod +x mvnw
 
-script:
-  - mvnw test
+script: "mvn cobertura:cobertura"
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

@@ -17,7 +17,7 @@ class UserServiceTest {
 
     @Test
     void findRawById() {
-        final String validId = "5e8fef0c96635a65deaa4eb8";
+        final String validId = "5e93acebeb3a8c34f285c1fa";
         final String invalidId = "5e8fef0c96635a65deabcdb8";
         assertNotNull(userService.findRawById(validId));
         assertNull(userService.findRawById(invalidId));
@@ -26,7 +26,7 @@ class UserServiceTest {
 
     @Test
     void findById() {
-        final String validId = "5e8fef0c96635a65deaa4eb8";
+        final String validId = "5e93acebeb3a8c34f285c1fa";
         final String invalidId = "5e8fef0c96635a65deabcdb8";
         assertNotNull(userService.findById(validId));
         assertNull(userService.findById(invalidId));
@@ -98,13 +98,14 @@ class UserServiceTest {
 
     @Test
     void update() throws DuplicateUserNameException, DuplicateEmailException {
-        final String validId = "5e8fef0c96635a65deaa4eb8";
+        final String validId = "5e93acebeb3a8c34f285c1fa";
         final User invalidUser = new User();
         final User oldUser = userService.findRawById(validId);
         assertNotNull(oldUser);
         final String oldName = oldUser.getName();
         final String newName = "New Name";
         oldUser.setName(newName);
+        oldUser.setPassword(null);
         User updated = userService.update(oldUser).toRawType();
         assertNotNull(updated);
         assertEquals(updated.getName(), newName);
@@ -130,7 +131,7 @@ class UserServiceTest {
 
     @Test
     void favoriteAndUnfavorite() {
-        final String validId = "5e8fef0c96635a65deaa4eb8";
+        final String validId = "5e93acebeb3a8c34f285c1fa";
         final String termId = "5e9126cb94585272f2c06ae9";
         User validUser = userService.findRawById(validId);
         assertNotNull(validId);

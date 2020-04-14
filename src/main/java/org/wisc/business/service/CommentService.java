@@ -65,7 +65,8 @@ public class CommentService {
     }
 
     public CommentPV add(Comment comment) {
-        if (comment.getTermId() == null || comment.getAuthorId() == null)
+        if (comment == null ||
+                comment.getTermId() == null || comment.getAuthorId() == null)
             return null;
         comment.setLastModifiedDate(new Date());
         comment.setLastEditedBy(comment.getAuthorId());
@@ -79,6 +80,8 @@ public class CommentService {
     }
 
     public CommentPV update(Comment comment) {
+        if (comment == null)
+            return null;
         Comment oldComment = findRawById(comment.getId());
         if (oldComment == null)
             return null;
@@ -94,7 +97,7 @@ public class CommentService {
     }
 
     public boolean delete(Comment comment) {
-        if (findById(comment.getId()) == null)
+        if (comment == null || findById(comment.getId()) == null)
             return false;
         if (comment.getTermId() != null) {
             Term term = termService.findRawById(comment.getTermId());
