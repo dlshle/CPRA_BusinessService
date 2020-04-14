@@ -172,7 +172,8 @@ public class UserService {
         tIds.add(termId);
         user.setFavorite(tIds);
         try {
-            return convertUserToUserPV(userDAO.save(user));
+            user.setPassword("");
+            return update(user);
         } catch (Exception e) {
             return null;
         }
@@ -187,7 +188,8 @@ public class UserService {
         tIds.remove(termId);
         user.setFavorite(tIds);
         try {
-            return convertUserToUserPV(userDAO.save(user));
+            user.setPassword("");
+            return update(user);
         } catch (Exception e) {
             return null;
         }

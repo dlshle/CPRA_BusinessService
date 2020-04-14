@@ -40,7 +40,6 @@ public class User implements Serializable {
     // id list of favorite terms
     private List<String> favorite;
     private Date createdDate;
-    @JsonIgnore
     private String salt;
     private boolean isAdmin = false;
 

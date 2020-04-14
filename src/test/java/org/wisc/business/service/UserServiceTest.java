@@ -17,7 +17,7 @@ class UserServiceTest {
 
     @Test
     void findRawById() {
-        final String validId = "5e93acebeb3a8c34f285c1fa";
+        final String validId = "5e952f141858757d179e74ac";
         final String invalidId = "5e8fef0c96635a65deabcdb8";
         assertNotNull(userService.findRawById(validId));
         assertNull(userService.findRawById(invalidId));
@@ -26,7 +26,7 @@ class UserServiceTest {
 
     @Test
     void findById() {
-        final String validId = "5e93acebeb3a8c34f285c1fa";
+        final String validId = "5e952f141858757d179e74ac";
         final String invalidId = "5e8fef0c96635a65deabcdb8";
         assertNotNull(userService.findById(validId));
         assertNull(userService.findById(invalidId));
@@ -98,18 +98,19 @@ class UserServiceTest {
 
     @Test
     void update() throws DuplicateUserNameException, DuplicateEmailException {
-        final String validId = "5e93acebeb3a8c34f285c1fa";
+        final String validId = "5e952f141858757d179e74ac";
         final User invalidUser = new User();
         final User oldUser = userService.findRawById(validId);
         assertNotNull(oldUser);
         final String oldName = oldUser.getName();
         final String newName = "New Name";
         oldUser.setName(newName);
-        oldUser.setPassword(null);
+        oldUser.setPassword("");
         User updated = userService.update(oldUser).toRawType();
         assertNotNull(updated);
         assertEquals(updated.getName(), newName);
         oldUser.setName(oldName);
+        oldUser.setPassword("");
         updated = userService.update(oldUser).toRawType();
         assertNotNull(updated);
         assertEquals(updated.getName(), oldName);
@@ -131,10 +132,10 @@ class UserServiceTest {
 
     @Test
     void favoriteAndUnfavorite() {
-        final String validId = "5e951252280188748b2126eb";
+        final String validId = "5e952f141858757d179e74ac";
         final String termId = "5e911eea94585272f2c027f5";
         User validUser = userService.findRawById(validId);
-        assertNotNull(validId);
+        assertNotNull(validUser);
         User updated = userService.favorite(validUser, termId).toRawType();
         assertTrue(updated.getFavorite().contains(termId));
         assertNull(userService.favorite(updated, termId));
