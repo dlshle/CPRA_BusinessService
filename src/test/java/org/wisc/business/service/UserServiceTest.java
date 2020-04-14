@@ -131,8 +131,8 @@ class UserServiceTest {
 
     @Test
     void favoriteAndUnfavorite() {
-        final String validId = "5e93acebeb3a8c34f285c1fa";
-        final String termId = "5e9126cb94585272f2c06ae9";
+        final String validId = "5e951252280188748b2126eb";
+        final String termId = "5e911eea94585272f2c027f5";
         User validUser = userService.findRawById(validId);
         assertNotNull(validId);
         User updated = userService.favorite(validUser, termId).toRawType();
