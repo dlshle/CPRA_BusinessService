@@ -2,13 +2,9 @@ package org.wisc.business.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.wisc.business.authentication.UserAuthManager;
 import org.wisc.business.model.AjaxResponse;
 import org.wisc.business.model.UserModel.User;
 import org.wisc.business.service.AuthenticationService;
-import org.wisc.business.service.UserService;
-
-import javax.websocket.server.PathParam;
 
 /**
  * Auth Controller
