@@ -5,7 +5,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.wisc.business.model.BusinessModel.Comment;
 import org.wisc.business.model.BusinessModel.Season;
 import org.wisc.business.model.BusinessModel.Term;
 import org.wisc.business.model.PVModels.TermPV;
@@ -24,7 +23,7 @@ class TermServiceTest {
 
     @Test
     void findRawById() {
-        final String validId = "5e92a70d0c0435386682b20f";
+        final String validId = "5e8ffd935b6cdc554730cb4a";
         final String invalidId = "5e92a70d0c0435386683210";
         assertNotNull(termService.findRawById(validId));
         assertNull(termService.findRawById(invalidId));
@@ -33,7 +32,7 @@ class TermServiceTest {
 
     @Test
     void findById() {
-        final String validId = "5e92a70d0c0435386682b20f";
+        final String validId = "5e8ffd935b6cdc554730cb4a";
         final String invalidId = "5e92a70d0c0435386683210";
         assertNotNull(termService.findById(validId));
         assertNull(termService.findById(invalidId));
@@ -43,7 +42,7 @@ class TermServiceTest {
     @Test
     void findAllByName() {
         final String validQueryName = "CS";
-        final String emptyQueryName = "SC";
+        final String emptyQueryName = "DAMN";
         final List<TermPV> validQueryResult =
                 termService.findAllByName(validQueryName);
         assertNotNull(validQueryResult);
@@ -120,7 +119,7 @@ class TermServiceTest {
 
     @Test
     void updateRaw() {
-        final String validId = "5e92a70d0c0435386682b20f";
+        final String validId = "5e8ffd935b6cdc554730cb4a";
         final Term oldTerm = termService.findRawById(validId);
         assertNotNull(oldTerm);
         final String oldName = oldTerm.getName();
@@ -137,7 +136,7 @@ class TermServiceTest {
 
     @Test
     void update() {
-        final String validId = "5e92a70d0c0435386682b20f";
+        final String validId = "5e8ffd935b6cdc554730cb4a";
         final TermPV oldTerm = termService.findById(validId);
         assertNotNull(oldTerm);
         final String oldName = oldTerm.getName();

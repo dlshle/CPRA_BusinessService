@@ -1,13 +1,26 @@
-from pymongo import *
+#tests
+import os
+
 from flask import Flask
 from flask import request
 from tensorflow.keras.models import load_model
 from random import shuffle
 import tensorflow as tf
 import numpy as np
-model=tf.keras.models.load_model('model.h5')
+model=tf.keras.models.load_model('./model.h5')
+
 import pandas as pd
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+import requests
+import json
+
+##########
+print('---------------------------------')
+print(os.path.dirname(os.path.realpath(__file__)))
+os.system('ls')
+print(model)
+print('---------------------------------')
+##########
 
 # Keras initialization
 test_example = 'he is not a nice person'
@@ -55,14 +68,51 @@ def is_toxic(comment):
 # Flask server
 app = Flask(__name__)
 
-@app.route('/', methods = ['GET', 'POST'])
+def append_field(field_name, value, quote=False, last=False):
+  row = quote_string(field_name) + ':'
+  if quote:
+    row += quote_string(str(value))
+  else:
+    row += value
+  if not last:
+    row += ','
+  return row
+
+def quote_string(s):
+  return '\"' + s + '\"'
+
+def generate_message(success, message):
+  msg = '{'
+  if success:
+    msg += append_field('success', True)
+  msg += append_field('message', message, True, True)
+  msg += '}'
+  return msg
+
+def make_http_request(method, url, headers, payload):
+  if method == 'POST':
+    return requests.post(url, json=payload, headers=headers)
+  if method == 'PUT':
+    return requests.put(url, json=payload, headers=headers)
+  return None
+
+base_url = 'http://172.220.7.76:8080/v1/comments'
+
+@app.route('/', methods = ['GET', 'POST', 'PUT'])
 def filter_service():
-  if request.method == 'GET':
-    print(request.args.get('comment', default='', type=str))
-  if request.method == 'POST':
-    print(request.data)
+  if request.method == 'POST' or request.method == 'PUT':
+    if not request.headers.get('token'):
+      return generate_message(False, 'Token is not found')
+    if request.is_json:
+      data = request.get_json()
+      if data['content'] and is_toxic(data['content']):
+        return generate_message(False, 'this comment is toxic')
+      # send post request to the server upon success
+      res = make_http_request('POST', base_url, request.headers, data)
+      return json.dumps(res.json())
+    else:
+      return generate_message(False, 'request is not a json format')
+  return generate_message(False, 'Unknown operation. This port only takes POST requests for comment filtering services.')
 
-  return 'ok'
-
-app.run()
-
+if __name__ == "__main__":
+  app.run(host='0.0.0.0', debug=True)

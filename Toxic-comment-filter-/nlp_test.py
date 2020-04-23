@@ -47,3 +47,4 @@ def is_toxic(comment):
 	else:
 		return False
 
+print(is_toxic('wow that really sucks, its bad and ugly and really disgusting'))

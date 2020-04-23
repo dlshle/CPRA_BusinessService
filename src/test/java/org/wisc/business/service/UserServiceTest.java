@@ -131,10 +131,11 @@ class UserServiceTest {
     }
 
     @Test
-    void favoriteAndUnfavorite() {
-        final String validId = "5e952f141858757d179e74ac";
-        final String termId = "5e911eea94585272f2c027f5";
-        User validUser = userService.findRawById(validId);
+    void favoriteAndUnfavorite() throws DuplicateUserNameException, DuplicateEmailException {
+        final String termId = "5e7f15d9320caf573bbd4d55";
+        final User newUser = User.builder().email("new_user@123.321").password(
+                "password").build();
+        final User validUser = userService.add(newUser).toRawType();
         assertNotNull(validUser);
         User updated = userService.favorite(validUser, termId).toRawType();
         assertTrue(updated.getFavorite().contains(termId));
@@ -147,5 +148,7 @@ class UserServiceTest {
         assertNull(userService.favorite(validUser, null));
         assertNull(userService.unfavorite(null, termId));
         assertNull(userService.unfavorite(validUser, null));
+
+        assertTrue(userService.delete(validUser));
     }
 }
