@@ -1,46 +1,49 @@
-package org.wisc.business.model;
+package org.wisc.business.model.PVModels;
 
 import org.junit.jupiter.api.Test;
-import org.wisc.business.model.BusinessModel.*;
+import org.wisc.business.model.UserModel.User;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class BusinessModelTest {
+public class PVModelsTest {
 
     @Test
-    public void testComment() {
+    public void testCommentPV() {
         // creation w/ default constructor
-        Comment c = new Comment();
+        CommentPV c = new CommentPV();
         assertNotNull(c);
-        assertNull(c.getTermId());
-        assertNull(c.getAuthorId());
+        assertNull(c.getTerm());
+        assertNull(c.getAuthor());
         assertNull(c.getContent());
         assertNull(c.getId());
         assertNull(c.getLastEditedBy());
         assertNull(c.getLastModifiedDate());
         assertNull(c.getRating());
 
-        c.setLastEditedBy("shit");
-        assertEquals("shit", c.getLastEditedBy());
-        c.setLastModifiedDate(new Date());
-        assertEquals(new Date(), c.getLastModifiedDate());
-        c.setAuthorId("111");
-        assertEquals("111", c.getAuthorId());
+        User u = new User();
+        c.setLastEditedBy(u);
+        assertEquals(u, c.getLastEditedBy());
+        Date d = new Date();
+        c.setLastModifiedDate(d);
+        assertEquals(d, c.getLastModifiedDate());
+        c.setAuthor(u);
+        assertEquals(u, c.getAuthor());
         c.setContent("content");
         assertEquals("content", c.getContent());
         c.setRating((double)2);
         assertEquals(2.0, c.getRating());
         c.setId("111");
         assertEquals("111", c.getId());
-        c.setTermId("222");
-        assertEquals("222", c.getTermId());
+        NameIdPair pair = new NameIdPair("n","1");
+        c.setTerm(pair);
+        assertEquals(pair, c.getTerm());
 //        assertNull(c.setRating((double)4)); //?
 
         // all args constructor
-        Comment d = new Comment("123","456","content","789","shu",new Date(), 1.0);
+        CommentPV d = new CommentPV("123","456","content","789","shu",new Date()
+                , 1.0);
         assertNotNull(d);
         assertNotNull(d.equals(c)); //?
         assertNotNull(d.getAuthorId());
@@ -124,11 +127,17 @@ public class BusinessModelTest {
 
     @Test
     public void testSeason() {
-        assertNotNull(Season.generateSeason("fall"));
-        assertNotNull(Season.SPRING);
-        assertNotNull(Season.valueOf("fall"));
-        assertNotNull(Season.values());
-
+        Season f = Season.generateSeason("fall");
+        Season sp = Season.generateSeason("spring");
+        Season su = Season.generateSeason("summer");
+        Season na = Season.generateSeason("other");
+        assertNull(na);
+        assertNotNull(f);
+        assertNotNull(sp);
+        assertNotNull(su);
+        assertEquals(f.toString(), "FALL");
+        assertEquals(su.toString(), "SUMMER");
+        assertEquals(sp.toString(), "SPRING");
     }
 
     @Test

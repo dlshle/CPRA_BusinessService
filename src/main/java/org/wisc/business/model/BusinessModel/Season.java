@@ -16,7 +16,7 @@ public enum Season {
                 return FALL;
             case "spring":
                 return SPRING;
-            case "SUMMER":
+            case "summer":
                 return SUMMER;
         }
         return null;
