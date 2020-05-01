@@ -3,7 +3,6 @@ package org.wisc.business.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.wisc.business.dao.CourseDAO;
-import org.wisc.business.dao.TermDAO;
 import org.wisc.business.model.BusinessModel.Course;
 import org.wisc.business.model.BusinessModel.Term;
 import org.wisc.business.model.PVModels.CoursePV;

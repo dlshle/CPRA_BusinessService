@@ -8,6 +8,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserModelTest {
+
     @Test
     public void testUser() {
         User u = new User();

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AjaxResponse {
     private boolean isSuccess;
-    private int status;
+    private Integer status;
     private String message;
     private Object data;
 

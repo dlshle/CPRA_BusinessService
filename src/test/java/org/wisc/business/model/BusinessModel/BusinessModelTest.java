@@ -66,6 +66,10 @@ public class BusinessModelTest {
         assertEquals("111", d.getId());
         d.setTermId("222");
         assertEquals("222", d.getTermId());
+
+        assertFalse(c.equals(Comment.builder().id("321").build()));
+        assertFalse(c.equals(new Integer(1)));
+        assertTrue(c.equals(c));
     }
 
     @Test
@@ -92,6 +96,10 @@ public class BusinessModelTest {
         assertNotNull(d.getName());
         assertNotNull(d.getDescription());
         assertNotNull(d.getTermsIds());
+
+        assertFalse(c.equals(Course.builder().id("asd").build()));
+        assertFalse(c.equals(new Double(1.0)));
+        assertTrue(c.equals(c));
     }
 
     @Test
@@ -119,6 +127,10 @@ public class BusinessModelTest {
         assertNotNull(q.getName());
         assertNotNull(q.getDescription());
         assertNotNull(q.getTermIds());
+
+        assertFalse(p.equals(Professor.builder().id("566346").build()));
+        assertFalse(p.equals(new Integer(2)));
+        assertTrue(p.equals(p));
     }
 
     @Test
@@ -182,6 +194,10 @@ public class BusinessModelTest {
         assertNotNull(m.getYear());
         assertNotNull(m.getId());
         assertNotNull(m.getProfessorIds());
+
+        assertFalse(t.equals(Term.builder().id("12313423423").build()));
+        assertFalse(t.equals("asdas"));
+        assertTrue(t.equals(t));
     }
 
 }

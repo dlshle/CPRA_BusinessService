@@ -5,10 +5,11 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.wisc.business.model.BusinessModel.Season;
-import org.wisc.business.model.BusinessModel.Term;
-import org.wisc.business.model.PVModels.TermPV;
+import org.wisc.business.model.BusinessModel.*;
+import org.wisc.business.model.PVModels.*;
+import org.wisc.business.model.UserModel.User;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,6 +21,12 @@ class TermServiceTest {
     TermService termService;
     @Autowired
     CommentService commentService;
+    @Autowired
+    UserService userService;
+    @Autowired
+    CourseService courseService;
+    @Autowired
+    ProfessorService professorService;
 
     @Test
     void findRawById() {
@@ -135,6 +142,29 @@ class TermServiceTest {
     }
 
     @Test
+    void addRawComment() {
+        // c
+        UserPV user = TestUtils.addNewTestUser(userService);
+        TermPV term = TestUtils.addNewTestTerm(termService);
+        CommentPV valid = TestUtils.addNewTestComment(commentService,
+                term.toRawType(), user.toRawType());
+
+        assertFalse(termService.addRawComment(null));
+        // tid
+        Comment c = new Comment();
+        assertFalse(termService.addRawComment(c));
+        // t(invalid tid)
+        c.setTermId("asdjfjoiwfjeoiwfj");
+        assertFalse(termService.addRawComment(c));
+        //success
+        assertTrue(termService.addRawComment(valid.toRawType()));
+        // cleanup
+        TestUtils.deleteAndTestUser(userService, user.toRawType(), true);
+        TestUtils.deleteAndTestTerm(termService, term.toRawType(), true);
+        assertFalse(commentService.deleteRaw(valid.toRawType()));
+    }
+
+    @Test
     void update() {
         final String validId = "5e8ffd935b6cdc554730cb4a";
         final TermPV oldTerm = termService.findById(validId);
@@ -159,5 +189,37 @@ class TermServiceTest {
         assertTrue(termService.delete(newTermPV.toRawType()));
         assertFalse(termService.delete(newTermPV.toRawType()));
         assertFalse(termService.delete(null));
+
+        // course professor commentid
+        Term t = TestUtils.addNewTestTerm(termService).toRawType();
+        Course c = TestUtils.addNewTestCourse(courseService).toRawType();
+        Professor p = TestUtils.addNewTestProfessor(professorService).toRawType();
+        User u = TestUtils.addNewTestUser(userService).toRawType();
+        Comment cm = TestUtils.addNewTestComment(commentService, t, u).toRawType();
+        LinkedList<String> professors = new LinkedList<>();
+        LinkedList<String> comments = new LinkedList<>();
+        professors.add(p.getId());
+        comments.add(c.getId());
+        t.setCourseId(c.getId());
+        t.setProfessorIds(professors);
+        t.setCommentIds(comments);
+        termService.updateRaw(t);
+        LinkedList<String> termIds = new LinkedList<>();
+        termIds.add(t.getId());
+        c.setTermsIds(termIds);
+        courseService.updateRaw(c);
+        p.setTermIds(termIds);
+        professorService.updateRaw(p);
+
+        // test add(for branch cov.)
+        Term x = termService.add(t).toRawType();
+        assertTrue(termService.delete(x));
+
+        assertFalse(termService.delete(t));
+        // cleanup
+        assertTrue(professorService.delete(p));
+        assertTrue(courseService.delete(c));
+        assertTrue(userService.delete(u));
+        assertFalse(commentService.deleteRaw(cm));
     }
 }
