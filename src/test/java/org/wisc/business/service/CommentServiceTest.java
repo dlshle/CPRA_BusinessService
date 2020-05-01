@@ -56,7 +56,7 @@ class CommentServiceTest {
     @Test
     void add() {
         final Comment validComment = Comment.builder().authorId(
-                "5e8fef0c96635a65deaa4eb8").termId("5e7f12300b0e027580738658").build();
+                "5e8fef0c96635a65deaa4eb8").termId("5e7f15d9320caf573bbd4d55").build();
         final String validCommentMessage = "Test with valid comment";
         final Comment inValidComment = new Comment();
         final String inValidCommentMessage = "Test with invalid comment";
@@ -74,7 +74,7 @@ class CommentServiceTest {
     @Test
     void update() {
         final CommentPV validComment = commentService.findById(
-                "5e903aec94585272f2bfd505");
+                "5e7fb90f6e1ea30d75993711");
         final CommentPV inValidComment = commentService.findById("123432");
 
         assertNotNull(validComment, "Test update valid comment not null");
@@ -105,7 +105,7 @@ class CommentServiceTest {
     @Test
     void delete() {
         final Comment validComment = Comment.builder().authorId(
-                "5e8fef0c96635a65deaa4eb8").termId("5e7f12300b0e027580738658").build();
+                "5e8fef0c96635a65deaa4eb8").termId("5e7f15d9320caf573bbd4d55").build();
         final Comment invalidComment = new Comment();
         final CommentPV newCommentPV = commentService.add(validComment);
         assertNotNull(newCommentPV);
