@@ -1,5 +1,7 @@
 # Business Service
 
+Back-end is deployed using docker on a ThinkPad laptop. It will be running till June 1st. Therefore, as long as you can run the front-end, you can access all the features w/out any problem.
+
 Test user: 
 ```
 {
