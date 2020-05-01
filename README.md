@@ -5,17 +5,12 @@ Back-end is deployed using docker on a ThinkPad laptop. It will be running till 
 Test user: 
 ```
 {
-    "username":"admin",
     "email":"badger@wisc.edu",
     "passwd":"123456"
 }
 ```
 
-Add user status token from /v1/auth to RequestHeader to enable all services.
-
-## TODO:
-- Unit tests for Course, Term, User, and Professor services
-- Integration test.
+Add user status token from `/v1/auth` to RequestHeader to enable all services.
 
 ## Design(Deprecated)
 Typical MVC design. 
@@ -23,8 +18,8 @@ Models including business models and user model. Business
 models include all models for business services(Course, Term, Professor, 
 Comment). User service is a copy of user model from the user service. 
 
-LRUCache is used to cache BusinessService database access results. 
-LRFCache is used to cache user log-in status(JWT).
+@Deprecated LRUCache is used to cache BusinessService database access results. 
+@Deprecated LRFCache is used to cache user log-in status(JWT).
 
 Controllers include course controller, term controller, professor controller,
 and comment controller. All controller handle the basic CRUD of data with 
